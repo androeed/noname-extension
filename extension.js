@@ -1,4 +1,4 @@
-game.import('extension', function (lib, game, ui, get, ai, _status) {
+game.import('extension', function(lib, game, ui, get, ai, _status) {
 
 	/*-----------------分割线-----------------*/
 	// 调用启动页代码
@@ -32,7 +32,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 	//武将搜索代码摘抄至扩展ol
 	var kzol_create_characterDialog = ui.create.characterDialog;
-	ui.create.characterDialog = function () {
+	ui.create.characterDialog = function() {
 		var dialog = kzol_create_characterDialog.apply(this, arguments);
 		if (lib.config.mode == 'stone') return dialog;
 		var content_container = dialog.childNodes[0];
@@ -61,7 +61,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			'<option value="skill2">技能叙述</option>' +
 			'</select>';
 		var input = div.querySelector('input');
-		input.onkeydown = function (e) {
+		input.onkeydown = function(e) {
 			e.stopPropagation();
 			if (e.keyCode == 13) {
 				var value = this.value;
@@ -105,7 +105,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 								for (var j = 0; j < skills.length; j++) {
 									var skill = skills[j];
 									if (lib.translate[skill + '_info'] != undefined && lib.translate[
-										skill + '_info'].indexOf(value) != -1) {
+											skill + '_info'].indexOf(value) != -1) {
 										buttons.childNodes[i].classList.remove('nodisplay');
 									};
 								};
@@ -121,7 +121,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				};
 			};
 		};
-		input.onmousedown = function (e) {
+		input.onmousedown = function(e) {
 			e.stopPropagation();
 		};
 		if (lib.config['extension_武将卡牌搜索器_enable'] == true) {
@@ -130,7 +130,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					div.style.height = '58px';
 					div.innerHTML += '<br><button>武将卡牌搜索器</button>';
 					var button = div.querySelector('button');
-					button.onclick = function () {
+					button.onclick = function() {
 						window.诗笺_manual.show();
 					};
 				};
@@ -152,7 +152,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 	var app = {
 		name: '手杀ui',
-		each: function (obj, fn, node) {
+		each: function(obj, fn, node) {
 			if (!obj) return node;
 			if (typeof obj.length === 'number') {
 				for (var i = 0; i < obj.length; i++) {
@@ -169,12 +169,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			}
 			return node;
 		},
-		isFunction: function (fn) {
+		isFunction: function(fn) {
 			return typeof fn === 'function';
 		},
 		event: {
 			listens: {},
-			on: function (name, listen, remove) {
+			on: function(name, listen, remove) {
 				if (!this.listens[name]) {
 					this.listens[name] = [];
 				}
@@ -184,21 +184,21 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				});
 				return this;
 			},
-			off: function (name, listen) {
-				return app.each(this.listens[name], function (item, index) {
+			off: function(name, listen) {
+				return app.each(this.listens[name], function(item, index) {
 					if (listen === item || listen === item.listen) {
 						this.listens[name].splice(index, 1);
 					}
 				}, this);
 			},
-			emit: function (name) {
+			emit: function(name) {
 				var args = Array.from(arguments).slice(1);
-				return app.each(this.listens[name], function (item) {
+				return app.each(this.listens[name], function(item) {
 					item.listen.apply(null, args);
 					item.remove && this.off(name, item);
 				}, this);
 			},
-			once: function (name, listen) {
+			once: function(name, listen) {
 				return this.on(name, listen, true);
 			},
 		},
@@ -207,18 +207,18 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 		plugins: [],
 		pluginsMap: {},
 		path: {
-			ext: function (path, ext) {
+			ext: function(path, ext) {
 				ext = ext || app.name;
 				return lib.assetURL + 'extension/' + ext + '/' + path;
 			},
 		},
-		on: function (event, listen) {
+		on: function(event, listen) {
 			if (!app.listens[event]) {
 				app.listens[event] = [];
 			}
 			app.listens[event].add(listen);
 		},
-		once: function (event, listen) {
+		once: function(event, listen) {
 			if (!app.listens[event]) {
 				app.listens[event] = [];
 			}
@@ -227,19 +227,19 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				remove: true,
 			});
 		},
-		off: function (event, listen) {
+		off: function(event, listen) {
 			var listens = app.listens[event] || [];
-			var filters = listen ? listens.filter(function (item) {
+			var filters = listen ? listens.filter(function(item) {
 				return item === listen || item.listen === listen;
 			}) : listens.slice(0);
-			filters.forEach(function (item) {
+			filters.forEach(function(item) {
 				listens.remove(item);
 			});
 		},
-		emit: function (event) {
+		emit: function(event) {
 			var args = Array.from(arguments).slice(1);
 			var listens = app.listens[event] || [];
-			listens.forEach(function (item) {
+			listens.forEach(function(item) {
 				if (typeof item === 'function') {
 					item.apply(null, args);
 				} else if (typeof item.listen === 'function') {
@@ -248,7 +248,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				}
 			});
 		},
-		import: function (fn) {
+		import: function(fn) {
 
 			var obj = fn(lib, game, ui, get, ai, _status, app);
 			if (obj) {
@@ -258,15 +258,15 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			app.plugins.push(obj);
 		},
 
-		importPlugin: function (data, setText) {
+		importPlugin: function(data, setText) {
 			if (!window.JSZip) {
 				var args = arguments;
-				lib.init.js(lib.assetURL + 'game', 'jszip', function () {
+				lib.init.js(lib.assetURL + 'game', 'jszip', function() {
 					app.importPlugin.apply(app, args);
 				});
 				return;
 			}
-			setText = typeof setText === 'function' ? setText : function () { };
+			setText = typeof setText === 'function' ? setText : function() {};
 			var zip = new JSZip(data);
 			var dirList = [],
 				fileList = [];
@@ -288,7 +288,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			var finish = 0;
 			var isNode = lib.node && lib.node.fs;
 
-			var writeFile = function () {
+			var writeFile = function() {
 				var file = fileList.shift();
 				if (file) {
 					setText('正在导入(' + (++finish) + '/' + total + ')...')
@@ -299,7 +299,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					setText('导入插件');
 				}
 			};
-			var ensureDir = function () {
+			var ensureDir = function() {
 				if (dirList.length) {
 					setText('正在导入(' + (++finish) + '/' + total + ')...')
 					game.ensureDirectory(dirList.shift(), ensureDir);
@@ -309,49 +309,49 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			};
 			ensureDir();
 		},
-		loadPlugins: function (callback) {
-			game.getFileList('extension/' + app.name, function (floders) {
+		loadPlugins: function(callback) {
+			game.getFileList('extension/' + app.name, function(floders) {
 				var total = floders.length;
 				var current = 0;
 				if (total === current) {
 					callback();
 					return;
 				}
-				var loaded = function () {
+				var loaded = function() {
 					if (++current === total) {
 						callback();
 					}
 				};
-				floders.forEach(function (dir) {
+				floders.forEach(function(dir) {
 					if (lib.config.extension_手杀ui_yangshi == "on") {
 						game.readFile('extension/' + app.name + '/' + dir + '/main1.js',
-							function (data) {
+							function(data) {
 								var binarry = new Uint8Array(data);
 								var blob = new Blob([binarry]);
 								var reader = new FileReader();
 								reader.readAsText(blob);
-								reader.onload = function () {
+								reader.onload = function() {
 									eval(reader.result);
 									loaded();
 								};
 							},
-							function (e) {
+							function(e) {
 								console.info(e);
 								loaded();
 							});
 					} else {
 						game.readFile('extension/' + app.name + '/' + dir + '/main2.js',
-							function (data) {
+							function(data) {
 								var binarry = new Uint8Array(data);
 								var blob = new Blob([binarry]);
 								var reader = new FileReader();
 								reader.readAsText(blob);
-								reader.onload = function () {
+								reader.onload = function() {
 									eval(reader.result);
 									loaded();
 								};
 							},
-							function (e) {
+							function(e) {
 								console.info(e);
 								loaded();
 							});
@@ -359,9 +359,9 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				});
 			});
 		},
-		reWriteFunction: function (target, name, replace, str) {
+		reWriteFunction: function(target, name, replace, str) {
 			if (name && typeof name === 'object') {
-				return app.each(name, function (item, index) {
+				return app.each(name, function(item, index) {
 					app.reWriteFunction(target, index, item[0], item[1]);
 				}, target);
 			}
@@ -373,7 +373,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				eval('target.' + name + ' = ' + funcStr);
 			} else {
 				var func = target[name];
-				target[name] = function () {
+				target[name] = function() {
 					var result, cancel;
 					var args = Array.from(arguments);
 					var args2 = Array.from(arguments);
@@ -386,9 +386,9 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			}
 			return target[name];
 		},
-		reWriteFunctionX: function (target, name, replace, str) {
+		reWriteFunctionX: function(target, name, replace, str) {
 			if (name && typeof name === 'object') {
-				return app.each(name, function (item, index) {
+				return app.each(name, function(item, index) {
 					app.reWriteFunction(target, index, item);
 				}, target);
 			}
@@ -410,7 +410,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					eval('target.' + name + ' = ' + funcStr);
 				} else {
 					var func = target[name];
-					target[name] = function () {
+					target[name] = function() {
 						var arg1 = Array.from(arguments);
 						var arg2 = Array.from(arguments);
 						var result;
@@ -425,9 +425,9 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			}
 			return target[name];
 		},
-		waitAllFunction: function (fnList, callback) {
+		waitAllFunction: function(fnList, callback) {
 			var list = fnList.slice(0);
-			var runNext = function () {
+			var runNext = function() {
 				var item = list.shift();
 				if (typeof item === 'function') {
 					item(runNext);
@@ -441,23 +441,23 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 		},
 		element: {
 			runNext: {
-				setTip: function (tip) {
+				setTip: function(tip) {
 					console.info(tip);
 				},
 			},
 		},
 		get: {
-			playerSkills: function (node, arg1, arg2) {
+			playerSkills: function(node, arg1, arg2) {
 				var skills = node.getSkills(arg1, arg2).slice(0);
 				skills.addArray(Object.keys(node.forbiddenSkills));
-				skills.addArray(Object.keys(node.disabledSkills).filter(function (k) {
+				skills.addArray(Object.keys(node.disabledSkills).filter(function(k) {
 					return !node.hiddenSkills.contains(k) &&
 						node.disabledSkills[k].length &&
 						node.disabledSkills[k][0] === k + '_awake';
 				}));
 				return skills;
 			},
-			skillInfo: function (skill, node) {
+			skillInfo: function(skill, node) {
 				var obj = {};
 				obj.id = skill;
 				if (lib.translate[skill + '_ab']) {
@@ -488,25 +488,25 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				return obj;
 			},
 		},
-		listen: function (node, func) {
+		listen: function(node, func) {
 			node.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', func);
-			return function () {
+			return function() {
 				node.removeEventLisnter(lib.config.touchscreen ? 'touchend' : 'click', func);
 			};
 		},
-		mockTouch: function (node) {
+		mockTouch: function(node) {
 			var event = new Event(lib.config.touchscreen ? 'touchend' : 'click');
 			node.dispatchEvent(event);
 			return node;
 		},
-		nextTick: function (func, time) {
+		nextTick: function(func, time) {
 			var funcs;
 			if (Array.isArray(func)) funcs = func;
 			else funcs = [func];
-			var next = function () {
+			var next = function() {
 				var item = funcs.shift();
 				if (item) {
-					setTimeout(function () {
+					setTimeout(function() {
 						item();
 						next();
 					}, time || 0);
@@ -518,191 +518,192 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 	return {
 		name: app.name,
-		content: function (config, pack) {
+		content: function(config, pack) {
 
 
 
 
 
 			/*选项条分离*/
-			/*分离选项条 修改选项函数   如果不用无名补丁 可以用这个*//*
-			lib.element.content.chooseControl = function () {
-				"step 0"
-				if (event.controls.length == 0) {
-					if (event.sortcard) {
-						var sortnum = 2;
-						if (event.sorttop) {
-							sortnum = 1;
-						}
-						for (var i = 0; i < event.sortcard.length + sortnum; i++) {
-							event.controls.push(get.cnNumber(i, true));
-						}
-					}
-					else if (event.choiceList) {
-						for (var i = 0; i < event.choiceList.length; i++) {
-							event.controls.push('选项' + get.cnNumber(i + 1, true));
-						}
-					}
-					else {
-						event.finish();
-						return;
-					}
-				}
-				else if (event.choiceList && event.controls.length == 1 && event.controls[0] == 'cancel2') {
-					event.controls.shift();
-					for (var i = 0; i < event.choiceList.length; i++) {
-						event.controls.push('选项' + get.cnNumber(i + 1, true));
-					}
-					event.controls.push('cancel2');
-				}
-				if (event.isMine()) {
-					if (event.arrangeSkill) {
-						var hidden = player.hiddenSkills.slice(0);
-						game.expandSkills(hidden);
-						if (hidden.length) {
-							for (var i of event.controls) {
-								if (_status.prehidden_skills.contains(i) && hidden.contains(i)) {
-									event.result = {
-										bool: true,
-										control: i,
+			/*分离选项条 修改选项函数   如果不用无名补丁 可以用这个*/
+			/*
+						lib.element.content.chooseControl = function () {
+							"step 0"
+							if (event.controls.length == 0) {
+								if (event.sortcard) {
+									var sortnum = 2;
+									if (event.sorttop) {
+										sortnum = 1;
 									}
+									for (var i = 0; i < event.sortcard.length + sortnum; i++) {
+										event.controls.push(get.cnNumber(i, true));
+									}
+								}
+								else if (event.choiceList) {
+									for (var i = 0; i < event.choiceList.length; i++) {
+										event.controls.push('选项' + get.cnNumber(i + 1, true));
+									}
+								}
+								else {
+									event.finish();
 									return;
 								}
 							}
-						}
-					}
-					else if (event.hsskill && _status.prehidden_skills.contains(event.hsskill) && event.controls.contains('cancel2')) {
-						event.result = {
-							bool: true,
-							control: 'cancel2',
-						}
-						return;
-					}
-					if (event.sortcard) {
-						var prompt = event.prompt || '选择一个位置';
-						if (event.tosort) {
-							prompt += '放置' + get.translation(event.tosort);
-						}
-						event.dialog = ui.create.dialog(prompt, 'hidden');
-						if (event.sortcard && event.sortcard.length) {
-							event.dialog.addSmall(event.sortcard);
-						}
-						else {
-							event.dialog.buttons = [];
-							event.dialog.add(ui.create.div('.buttons'));
-						}
-						var buttons = event.dialog.content.lastChild;
-						var sortnum = 2;
-						if (event.sorttop) {
-							sortnum = 1;
-						}
-						for (var i = 0; i < event.dialog.buttons.length + sortnum; i++) {
-							var item = ui.create.div('.button.card.pointerdiv.mebg');
-							item.style.width = '50px';
-							buttons.insertBefore(item, event.dialog.buttons[i]);
-							item.innerHTML = '<div style="font-family: xinwei;font-size: 25px;height: 75px;line-height: 25px;top: 8px;left: 10px;width: 30px;">第' + get.cnNumber(i + 1, true) + '张</div>';
-							if (i == event.dialog.buttons.length + 1) {
-								item.firstChild.innerHTML = '牌堆底';
+							else if (event.choiceList && event.controls.length == 1 && event.controls[0] == 'cancel2') {
+								event.controls.shift();
+								for (var i = 0; i < event.choiceList.length; i++) {
+									event.controls.push('选项' + get.cnNumber(i + 1, true));
+								}
+								event.controls.push('cancel2');
 							}
-							item.link = get.cnNumber(i, true);
-							item.listen(ui.click.dialogcontrol);
-						}
+							if (event.isMine()) {
+								if (event.arrangeSkill) {
+									var hidden = player.hiddenSkills.slice(0);
+									game.expandSkills(hidden);
+									if (hidden.length) {
+										for (var i of event.controls) {
+											if (_status.prehidden_skills.contains(i) && hidden.contains(i)) {
+												event.result = {
+													bool: true,
+													control: i,
+												}
+												return;
+											}
+										}
+									}
+								}
+								else if (event.hsskill && _status.prehidden_skills.contains(event.hsskill) && event.controls.contains('cancel2')) {
+									event.result = {
+										bool: true,
+										control: 'cancel2',
+									}
+									return;
+								}
+								if (event.sortcard) {
+									var prompt = event.prompt || '选择一个位置';
+									if (event.tosort) {
+										prompt += '放置' + get.translation(event.tosort);
+									}
+									event.dialog = ui.create.dialog(prompt, 'hidden');
+									if (event.sortcard && event.sortcard.length) {
+										event.dialog.addSmall(event.sortcard);
+									}
+									else {
+										event.dialog.buttons = [];
+										event.dialog.add(ui.create.div('.buttons'));
+									}
+									var buttons = event.dialog.content.lastChild;
+									var sortnum = 2;
+									if (event.sorttop) {
+										sortnum = 1;
+									}
+									for (var i = 0; i < event.dialog.buttons.length + sortnum; i++) {
+										var item = ui.create.div('.button.card.pointerdiv.mebg');
+										item.style.width = '50px';
+										buttons.insertBefore(item, event.dialog.buttons[i]);
+										item.innerHTML = '<div style="font-family: xinwei;font-size: 25px;height: 75px;line-height: 25px;top: 8px;left: 10px;width: 30px;">第' + get.cnNumber(i + 1, true) + '张</div>';
+										if (i == event.dialog.buttons.length + 1) {
+											item.firstChild.innerHTML = '牌堆底';
+										}
+										item.link = get.cnNumber(i, true);
+										item.listen(ui.click.dialogcontrol);
+									}
 
-						event.dialog.forcebutton = true;
-						event.dialog.classList.add('forcebutton');
-						event.dialog.open();
-					}
-					else if (event.dialogcontrol) {
-						event.dialog = ui.create.dialog(event.prompt || '选择一项', 'hidden');
-						for (var i = 0; i < event.controls.length; i++) {
-							var item = event.dialog.add('<div class="popup text pointerdiv" style="width:calc(100% - 10px);display:inline-block">' + event.controls[i] + '</div>');
-							item.firstChild.listen(ui.click.dialogcontrol);
-							item.firstChild.link = event.controls[i];
-						}
-						event.dialog.forcebutton = true;
-						event.dialog.classList.add('forcebutton');
-						if (event.addDialog) {
-							for (var i = 0; i < event.addDialog.length; i++) {
-								if (get.itemtype(event.addDialog[i]) == 'cards') {
-									event.dialog.addSmall(event.addDialog[i]);
+									event.dialog.forcebutton = true;
+									event.dialog.classList.add('forcebutton');
+									event.dialog.open();
+								}
+								else if (event.dialogcontrol) {
+									event.dialog = ui.create.dialog(event.prompt || '选择一项', 'hidden');
+									for (var i = 0; i < event.controls.length; i++) {
+										var item = event.dialog.add('<div class="popup text pointerdiv" style="width:calc(100% - 10px);display:inline-block">' + event.controls[i] + '</div>');
+										item.firstChild.listen(ui.click.dialogcontrol);
+										item.firstChild.link = event.controls[i];
+									}
+									event.dialog.forcebutton = true;
+									event.dialog.classList.add('forcebutton');
+									if (event.addDialog) {
+										for (var i = 0; i < event.addDialog.length; i++) {
+											if (get.itemtype(event.addDialog[i]) == 'cards') {
+												event.dialog.addSmall(event.addDialog[i]);
+											}
+											else {
+												event.dialog.add(event.addDialog[i]);
+											}
+										}
+										event.dialog.add(ui.create.div('.placeholder.slim'));
+									}
+									event.dialog.open();
 								}
 								else {
-									event.dialog.add(event.addDialog[i]);
+									if (event.seperate || lib.config.seperate_control) {
+										event.controlbars = [];
+										for (var i = 0; i < event.controls.length; i++) {
+											event.controlbars.push(ui.create.control([event.controls[i]]));
+										}
+									}
+									else {
+										event.controlbar = ui.create.control(event.controls);
+									}
+									if (event.dialog) {
+										if (Array.isArray(event.dialog)) {
+											event.dialog = ui.create.dialog.apply(this, event.dialog);
+										}
+										event.dialog.open();
+									}
+									else if (event.choiceList) {
+										event.dialog = ui.create.dialog(event.prompt || '选择一项', 'hidden');
+										event.dialog.forcebutton = true;
+										var list = ui.control.childNodes;
+										for (var i = 0; i < list.length; i++) {
+											list[i].childNodes[0].classList.add('choice');
+										}
+
+										event.dialog.open();
+										for (var i = 0; i < event.choiceList.length; i++) {
+											event.dialog.add('<div class="popup text" style="width:calc(100% - 10px);display:inline-block">' +
+												(event.displayIndex !== false ? ('选项' + get.cnNumber(i + 1, true) + '：') : '') + event.choiceList[i] + '</div>');
+										}
+									}
+									else if (event.prompt) {
+										event.dialog = ui.create.dialog(event.prompt);
+										if (event.prompt2) {
+											event.dialog.addText(event.prompt2, event.prompt2.length <= 20 || event.centerprompt2);
+										}
+									}
+								}
+								game.pause();
+								game.countChoose();
+								event.choosing = true;
+							}
+							else if (event.isOnline()) {
+								event.send();
+							}
+							else {
+								event.result = 'ai';
+							}
+							"step 1"
+							if (event.result == 'ai') {
+								event.result = {};
+								if (event.ai) {
+									var result = event.ai(event.getParent(), player);
+									if (typeof result == 'number') event.result.control = event.controls[result];
+									else event.result.control = result;
+								}
+								else event.result.control = event.controls[event.choice];
+							}
+							event.result.index = event.controls.indexOf(event.result.control);
+							event.choosing = false;
+							_status.imchoosing = false;
+							if (event.dialog && event.dialog.close) event.dialog.close();
+							if (event.controlbar) event.controlbar.close();
+							if (event.controlbars) {
+								for (var i = 0; i < event.controlbars.length; i++) {
+									event.controlbars[i].close();
 								}
 							}
-							event.dialog.add(ui.create.div('.placeholder.slim'));
-						}
-						event.dialog.open();
-					}
-					else {
-						if (event.seperate || lib.config.seperate_control) {
-							event.controlbars = [];
-							for (var i = 0; i < event.controls.length; i++) {
-								event.controlbars.push(ui.create.control([event.controls[i]]));
-							}
-						}
-						else {
-							event.controlbar = ui.create.control(event.controls);
-						}
-						if (event.dialog) {
-							if (Array.isArray(event.dialog)) {
-								event.dialog = ui.create.dialog.apply(this, event.dialog);
-							}
-							event.dialog.open();
-						}
-						else if (event.choiceList) {
-							event.dialog = ui.create.dialog(event.prompt || '选择一项', 'hidden');
-							event.dialog.forcebutton = true;
-							var list = ui.control.childNodes;
-							for (var i = 0; i < list.length; i++) {
-								list[i].childNodes[0].classList.add('choice');
-							}
-
-							event.dialog.open();
-							for (var i = 0; i < event.choiceList.length; i++) {
-								event.dialog.add('<div class="popup text" style="width:calc(100% - 10px);display:inline-block">' +
-									(event.displayIndex !== false ? ('选项' + get.cnNumber(i + 1, true) + '：') : '') + event.choiceList[i] + '</div>');
-							}
-						}
-						else if (event.prompt) {
-							event.dialog = ui.create.dialog(event.prompt);
-							if (event.prompt2) {
-								event.dialog.addText(event.prompt2, event.prompt2.length <= 20 || event.centerprompt2);
-							}
-						}
-					}
-					game.pause();
-					game.countChoose();
-					event.choosing = true;
-				}
-				else if (event.isOnline()) {
-					event.send();
-				}
-				else {
-					event.result = 'ai';
-				}
-				"step 1"
-				if (event.result == 'ai') {
-					event.result = {};
-					if (event.ai) {
-						var result = event.ai(event.getParent(), player);
-						if (typeof result == 'number') event.result.control = event.controls[result];
-						else event.result.control = result;
-					}
-					else event.result.control = event.controls[event.choice];
-				}
-				event.result.index = event.controls.indexOf(event.result.control);
-				event.choosing = false;
-				_status.imchoosing = false;
-				if (event.dialog && event.dialog.close) event.dialog.close();
-				if (event.controlbar) event.controlbar.close();
-				if (event.controlbars) {
-					for (var i = 0; i < event.controlbars.length; i++) {
-						event.controlbars[i].close();
-					}
-				}
-				event.resume();
-			};*/
+							event.resume();
+						};*/
 			//----------------------------------------------------------------------------------------//
 			/*隐藏结算按钮*/
 			if (config.JSAN) {
@@ -717,7 +718,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			//AI进度条
 			if (get.mode() != 'connect') {
 
-				lib.onover.push(function (bool) {
+				lib.onover.push(function(bool) {
 					if (document.getElementById("jindutiaoX")) {
 						document.getElementById("jindutiaoX").remove()
 					}
@@ -731,13 +732,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseBegin', 'useCardAfter', 'phaseZhunbeiBegin']
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						if (document.querySelector("#jindutiaoX")) return false;
 						return player != game.me && _status.currentPhase == player;
 					},
 					forced: true,
 					charlotte: true,
-					content: function () {
+					content: function() {
 
 						if (window.timerx) {
 							clearInterval(window.timerx);
@@ -818,12 +819,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							trigger: {
 								player: ['phaseEnd', 'dieBegin', 'phaseJieshuBegin'],
 							},
-							filter: function (event, player) {
+							filter: function(event, player) {
 								return player != game.me && _status.currentPhase == player;
 							},
 							forced: true,
 							charlotte: true,
-							content: function () {
+							content: function() {
 
 								if (window.timerx) {
 									clearInterval(window.timerx);
@@ -848,11 +849,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					},
 					forced: true,
 					charlotte: true,
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return _status.currentPhase != player && player != game.me;
 					},
 
-					content: function () {
+					content: function() {
 
 						if (window.timerxx) {
 							clearInterval(window.timerxx);
@@ -932,11 +933,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							},
 							forced: true,
 							charlotte: true,
-							filter: function (event, player) {
+							filter: function(event, player) {
 								//var cardname=event.cards[0].name
 								return player != game.me && _status.currentPhase != player;
 							},
-							content: function () {
+							content: function() {
 								if (window.timerxx) {
 									clearInterval(window.timerxx);
 									delete window.timerxx;
@@ -971,10 +972,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					return player != game.me;
 				},
-				content: function () {
+				content: function() {
 					var a = player.getElementsByClassName("playertip")
 					if (a.length <= 0) {
 
@@ -1007,11 +1008,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var b = event.player.getElementsByClassName("playertip")
 					return b.length > 0 && player != game.me;
 				},
-				content: function () {
+				content: function() {
 					var b = trigger.player.getElementsByClassName("playertip")
 					b[0].parentNode.removeChild(b[0])
 
@@ -1026,10 +1027,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					return player != game.me;
 				},
-				content: function () {
+				content: function() {
 					var a = player.getElementsByClassName("playertipQP")
 					if (a.length <= 0) {
 
@@ -1063,11 +1064,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var c = event.player.getElementsByClassName("playertipQP")
 					return c.length > 0 && player != game.me;
 				},
-				content: function () {
+				content: function() {
 					var c = trigger.player.getElementsByClassName("playertipQP")
 					c[0].parentNode.removeChild(c[0])
 
@@ -1087,11 +1088,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					// if(!player.countCards('h','shan')) return false;
 					return event.card.name == 'shan' && _status.currentPhase != player && player != game.me && lib.config.extension_手杀ui_yangshi == "on";
 				},
-				content: function () {
+				content: function() {
 					var d = player.getElementsByClassName("playertipshan")
 					if (d.length <= 0) {
 
@@ -1116,11 +1117,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var e = event.player.getElementsByClassName("playertipshan")
 					return e.length > 0 && player != game.me && _status.currentPhase != player;
 				},
-				content: function () {
+				content: function() {
 					var e = trigger.player.getElementsByClassName("playertipshan")
 					e[0].parentNode.removeChild(e[0])
 
@@ -1137,11 +1138,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					// if(!player.countCards('h','sha')) return false;
 					return event.card.name == 'sha' && _status.currentPhase != player && player != game.me && lib.config.extension_手杀ui_yangshi == "on";
 				},
-				content: function () {
+				content: function() {
 					var e = player.getElementsByClassName("playertipsha")
 					if (e.length <= 0) {
 
@@ -1166,11 +1167,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var f = event.player.getElementsByClassName("playertipsha")
 					return f.length > 0 && player != game.me && _status.currentPhase != player;
 				},
-				content: function () {
+				content: function() {
 					var f = trigger.player.getElementsByClassName("playertipsha")
 					f[0].parentNode.removeChild(f[0])
 
@@ -1187,11 +1188,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					// if(!player.countCards('h','sha')) return false;
 					return event.card.name == 'tao' && _status.currentPhase != player && player != game.me && lib.config.extension_手杀ui_yangshi == "on";
 				},
-				content: function () {
+				content: function() {
 					var k = player.getElementsByClassName("playertiptao")
 					if (k.length <= 0) {
 
@@ -1216,11 +1217,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var l = event.player.getElementsByClassName("playertiptao")
 					return l.length > 0 && player != game.me && _status.currentPhase != player;
 				},
-				content: function () {
+				content: function() {
 					var l = trigger.player.getElementsByClassName("playertiptao")
 					l[0].parentNode.removeChild(l[0])
 
@@ -1238,11 +1239,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					// if(!player.countCards('h','sha')) return false;
 					return event.card.name == 'jiu' && _status.currentPhase != player && player != game.me && lib.config.extension_手杀ui_yangshi == "on";
 				},
-				content: function () {
+				content: function() {
 					var n = player.getElementsByClassName("playertipjiu")
 					if (n.length <= 0) {
 
@@ -1267,11 +1268,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var m = event.player.getElementsByClassName("playertipjiu")
 					return m.length > 0 && player != game.me && _status.currentPhase != player;
 				},
-				content: function () {
+				content: function() {
 					var m = trigger.player.getElementsByClassName("playertipjiu")
 					m[0].parentNode.removeChild(m[0])
 
@@ -1288,7 +1289,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					if (event.card.storage && event.card.storage.nowuxie) return false;
 					var card = event.card;
 					if (event.name == 'phaseJudge' && card.viewAs) card = {
@@ -1299,7 +1300,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 					return event.card.name == 'wuxie' && _status.currentPhase != player && player != game.me && lib.config.extension_手杀ui_yangshi == "on";
 				},
-				content: function () {
+				content: function() {
 					var g = player.getElementsByClassName("playertipwuxie")
 					if (g.length <= 0) {
 
@@ -1324,11 +1325,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var h = event.player.getElementsByClassName("playertipwuxie")
 					return h.length > 0 && player != game.me && _status.currentPhase != player;
 				},
-				content: function () {
+				content: function() {
 					var h = trigger.player.getElementsByClassName("playertipwuxie")
 					h[0].parentNode.removeChild(h[0])
 
@@ -1343,10 +1344,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					return player != game.me;
 				},
-				content: function () {
+				content: function() {
 					var l = player.getElementsByClassName("playertipplay")
 					if (l.length <= 0) {
 
@@ -1378,11 +1379,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var m = event.player.getElementsByClassName("playertipplay")
 					return m.length > 0 && player != game.me;
 				},
-				content: function () {
+				content: function() {
 					var m = trigger.player.getElementsByClassName("playertipplay")
 					m[0].parentNode.removeChild(m[0])
 
@@ -1399,10 +1400,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					return _status.currentPhase != player && player != game.me && lib.config.extension_手杀ui_yangshi == "off";
 				},
-				content: function () {
+				content: function() {
 					var d = player.getElementsByClassName("playertipthink")
 					if (d.length <= 0) {
 
@@ -1425,11 +1426,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				},
 				forced: true,
 				charlotte: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					var e = event.player.getElementsByClassName("playertipthink")
 					return e.length > 0 && player != game.me && _status.currentPhase != player;
 				},
-				content: function () {
+				content: function() {
 					var e = trigger.player.getElementsByClassName("playertipthink")
 					e[0].parentNode.removeChild(e[0])
 
@@ -1447,7 +1448,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			//狗托播报
 			if (config.GTBB) {
 				var txcsanm = {}
-				var gddf = function () {
+				var gddf = function() {
 
 					var player = "玩家";
 					var my = lib.config.connect_nickname;
@@ -1525,9 +1526,9 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					].randomGet();
 					var d = [",大家快恭喜TA吧！", ",大家快恭喜TA吧。无名杀是一款非盈利游戏(づ ●─● )づ", ",祝你新的一年天天开心，万事如意"].randomGet();
 					/*定义部分属性--默认手杀*/
-					var fontset = 'FZLBJW';/*字体*/
-					var colorA = '#efe8dc';/*颜色a*/
-					var colorB = '#22c622';/*颜色b*/
+					var fontset = 'FZLBJW'; /*字体*/
+					var colorA = '#efe8dc'; /*颜色a*/
+					var colorB = '#22c622'; /*颜色b*/
 					if (lib.config.extension_手杀ui_GTBBFont == "off") {
 						fontset = 'yuanli';
 						colorA = '#86CC5B';
@@ -1536,7 +1537,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					/*-------*/
 					//----------//   
 					txcsanm.div.show();
-					setTimeout(function () {
+					setTimeout(function() {
 						txcsanm.div.hide();
 					}, 15500);
 
@@ -1560,7 +1561,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					/*------------------------*/
 				}
 
-				var id = setInterval(function () {
+				var id = setInterval(function() {
 					if (!txcsanm.div.parentNode && ui.window) {
 						ui.window.appendChild(txcsanm.div);
 						clearInterval(id);
@@ -1580,10 +1581,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						player: ['chooseToRespondBegin'],
 					},
 					direct: true,
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.auto == false;
 					},
-					content: function () {
+					content: function() {
 						if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 							if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
 								game.as_showImage('extension/手杀ui/lbtn/images/JDTS/ddxy.jpg', [10, 58, 7, 6], 10)
@@ -1601,12 +1602,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						target: 'shaBegin',
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return game.me == event.target;
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 							if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
 								game.as_showImage('extension/手杀ui/lbtn/images/JDTS/ddxy.jpg', [10, 58, 7, 6], true)
@@ -1622,7 +1623,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['useCardToBegin', 'phaseJudge']
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						if (event.card.storage && event.card.storage.nowuxie) return false;
 						var card = event.card;
 						if (event.name == 'phaseJudge' && card.viewAs) card = {
@@ -1644,7 +1645,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 							if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
 								game.as_showImage('extension/手杀ui/lbtn/images/JDTS/ddxy.jpg', [10, 58, 7, 6], true)
@@ -1664,10 +1665,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ["useCard", "respondAfter"],
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && event.card.name == 'shan';
 					},
-					content: function () {
+					content: function() {
 						game.as_removeImage();
 						if (_status.as_showImage_phase) {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
@@ -1690,11 +1691,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							'shanBegin'
 						],
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.auto == false;
 					},
 					direct: true,
-					content: function () {
+					content: function() {
 						game.as_removeImage();
 						if (_status.as_showImage_phase) {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
@@ -1716,12 +1717,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						global: ['phaseEnd', 'useCardAfter']
 					},
 
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return _status.currentPhase != game.me && player != game.me;
 					},
 					forced: true,
 					charlotte: true,
-					content: function () {
+					content: function() {
 						game.as_removeImage();
 					},
 				};
@@ -1732,15 +1733,15 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					},
 					forced: true,
 					charlotte: true,
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.auto == false;;
 					},
-					content: function () {
+					content: function() {
 						game.as_removeImage();
 					},
 				};
 				//游戏结束消失
-				lib.onover.push(function (bool) {
+				lib.onover.push(function(bool) {
 					game.as_removeImage();
 				});
 
@@ -1753,12 +1754,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					},
 					charlotte: true,
 					forced: true,
-					filter: function (event, player) {
+					filter: function(event, player) {
 						//剩余人数两人时
 						if (game.players.length == 2 && _status.currentPhase != game.me)
 							return true;
 					},
-					content: function () {
+					content: function() {
 						if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 							if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
 								game.as_showImage('extension/手杀ui/lbtn/images/JDTS/dfsk.jpg', [10, 58, 7, 6], true)
@@ -1775,12 +1776,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseBefore', 'phaseBegin'],
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.currentPhase == player && _status.auto == false;
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (event.triggername == 'phaseBefore') {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 								if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
@@ -1805,12 +1806,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseJudgeBegin', 'phaseJudgeEnd'],
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.currentPhase == player && _status.auto == false;
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (event.triggername == 'phaseJudgeBegin') {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 								if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
@@ -1835,12 +1836,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseDrawBegin', 'phaseDrawEnd'],
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.currentPhase == player && _status.auto == false;
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (event.triggername == 'phaseDrawBegin') {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 								if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
@@ -1865,12 +1866,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseUseBegin', 'phaseUseEnd'],
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.currentPhase == player && _status.auto == false;
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (event.triggername == 'phaseUseBegin') {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 								if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
@@ -1895,12 +1896,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseDiscardBegin', 'phaseDiscardEnd'],
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.currentPhase == player && _status.auto == false;
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (event.triggername == 'phaseDiscardBegin') {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 								if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
@@ -1925,12 +1926,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseEnd', 'phaseAfter']
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						return player == game.me && _status.currentPhase == player && _status.auto == false;
 					},
 					charlotte: true,
 					forced: true,
-					content: function () {
+					content: function() {
 						if (event.triggername == 'phaseEnd') {
 							if (lib.config.extension_手杀ui_JDTSYangshi == "1") {
 								if (get.mode() == 'taixuhuanjing' || lib.config['extension_EngEX_SSServant']) {
@@ -1956,7 +1957,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			//玩家进度条
 			if (get.mode() != 'connect' && config.jindutiao == true) {
 
-				lib.onover.push(function (bool) {
+				lib.onover.push(function(bool) {
 					if (document.getElementById("jindutiao")) {
 						document.getElementById("jindutiao").remove()
 					}
@@ -1970,13 +1971,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					trigger: {
 						player: ['phaseZhunbeiBegin', 'phaseBegin', 'phaseJudgeBegin', 'phaseDrawBegin', 'useCardAfter', 'phaseDiscardBegin', 'useSkill', 'loseAfter']
 					},
-					filter: function (event, player) {
+					filter: function(event, player) {
 						if (document.querySelector("#jindutiao")) return false;
 						return player == game.me && _status.currentPhase == player;
 					},
 					forced: true,
 
-					content: function () {
+					content: function() {
 
 						if (window.timer) {
 							clearInterval(window.timer);
@@ -2034,17 +2035,17 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							var boxContent = document.createElement('div')
 							boxContent.setAttribute('id', 'jindutiao')
 							boxContent.style.cssText =
-								"width: 400px;height:13px;position: fixed;bottom:26.9%;box-shadow: 0 0 4px #000000;display: block;margin: 0 0 !important;left: calc(50% - 197px);"/*上下左右位置*/
+								"width: 400px;height:13px;position: fixed;bottom:26.9%;box-shadow: 0 0 4px #000000;display: block;margin: 0 0 !important;left: calc(50% - 197px);" /*上下左右位置*/
 
 							var boxTime = document.createElement('div')
-							boxTime.data = 395/*黄色条长度*/
+							boxTime.data = 395 /*黄色条长度*/
 							boxTime.style.cssText =
 								"width:399px;height:10px;margin:0 0 0 1px;background-color: #F4C336;border-top:1px solid #FFF;border-bottom:1px solid #FFF;border-left:1px solid #FFF;position: absolute;top: 1px;border-radius: 2px;"
 							boxContent.appendChild(boxTime)
 
 
 							var boxTime2 = document.createElement('div')
-							boxTime2.data = 395/*白色条长度*/
+							boxTime2.data = 395 /*白色条长度*/
 							boxTime2.style.cssText =
 								"width:399px;height:0.1px;margin:0 0 0 0.5px;background-color: #fff; opacity:0.8 ;border-top:1px solid #FFF;border-bottom:1px solid #FFF;border-left:1px solid #FFF;position: absolute;top: 17px;border-radius: 2px;"
 							boxContent.appendChild(boxTime2)
@@ -2073,7 +2074,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						}
 
 						document.body.appendChild(boxContent)
-						window.timer = setInterval(function () {
+						window.timer = setInterval(function() {
 							boxTime.style.width = boxTime.data + 'px';
 							boxTime.data--;
 
@@ -2117,10 +2118,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 							},
 							forced: true,
-							filter: function (event, player) {
+							filter: function(event, player) {
 								return player == game.me;
 							},
-							content: function () {
+							content: function() {
 								if (window.timer) {
 
 									clearInterval(window.timer);
@@ -2153,13 +2154,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					},
 					forced: true,
 					charlotte: true,
-					filter: function (event, player) {
+					filter: function(event, player) {
 						if (document.querySelector("#jindutiaopl")) return false;
 						if (event.name == 'gameStart') return true;
 						return _status.currentPhase != player && player == game.me;
 					},
 
-					content: function () {
+					content: function() {
 
 						game.Jindutiaoplayer();
 
@@ -2172,12 +2173,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							},
 							forced: true,
 							charlotte: true,
-							filter: function (event, player) {
+							filter: function(event, player) {
 								if (document.querySelector("#jindutiaopl"))
 									return _status.currentPhase != game.me;
 								return false;
 							},
-							content: function () {
+							content: function() {
 								if (window.timerpl) {
 									clearInterval(window.timerpl);
 									delete window.timerpl;
@@ -2202,11 +2203,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					priority: 6,
 					forced: true,
 					forceLoad: true,
-					filter: function (event, player) {
+					filter: function(event, player) {
 						if (document.querySelector("#jindutiaopl")) return false;
 						return _status.currentPhase != game.me;
 					},
-					content: function () {
+					content: function() {
 						"step 0"
 						event.dying = trigger.player;
 						if (!event.acted) event.acted = [];
@@ -2218,12 +2219,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						}
 						event.acted.push(player);
 						if (lib.config.tao_enemy && event.dying.side != game.me.side && lib.config.mode != 'identity' && lib.config.mode != 'guozhan' && !event.dying.hasSkillTag('revertsave')) {
-							event._result = { bool: false }
-						}
-						else if (player.canSave(event.dying)) {
+							event._result = {
+								bool: false
+							}
+						} else if (player.canSave(event.dying)) {
 
 							player.chooseToUse({
-								filterCard: function (card, player, event) {
+								filterCard: function(card, player, event) {
 									event = event || _status.event;
 									return lib.filter.cardSavable(card, player, event.dying);
 								},
@@ -2233,21 +2235,20 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 								targetRequired: true,
 								dying: event.dying
 							});
-						}
-						else {
-							event._result = { bool: false }
+						} else {
+							event._result = {
+								bool: false
+							}
 						}
 						"step 2"
 						if (result.bool) {
 							if (trigger.player.hp <= 0 && !trigger.player.nodying && trigger.player.isAlive() && !trigger.player.isOut() && !trigger.player.removed) event.goto(0);
 							else trigger.untrigger();
-						}
-						else {
+						} else {
 							for (var i = 0; i < 20; i++) {
 								if (event.acted.contains(event.player.next)) {
 									break;
-								}
-								else {
+								} else {
 									event.player = event.player.next;
 									if (!event.player.isOut()) {
 										event.goto(1);
@@ -2268,7 +2269,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					priority: 6,
 					forced: true,
 					forceLoad: true,
-					filter: function (event, player) {
+					filter: function(event, player) {
 						if (event.card.storage && event.card.storage.nowuxie) return false;
 						if (document.querySelector("#jindutiaopl")) return false;
 
@@ -2290,7 +2291,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						}
 						return _status.currentPhase != game.me;
 					},
-					content: function () {
+					content: function() {
 
 						game.Jindutiaoplayer();
 
@@ -2321,7 +2322,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				priority: 5,
 				popup: false,
 				forced: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					if (event.card.storage && event.card.storage.nowuxie) return false;
 					var card = event.card;
 					if (event.name == 'phaseJudge' && card.viewAs) card = {
@@ -2342,7 +2343,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					return true;
 				},
 				forceLoad: true,
-				content: function () {
+				content: function() {
 					'step 0'
 					delete event.wuxieresult;
 					delete event.wuxieresult2;
@@ -2363,11 +2364,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					event._global_waiting = true;
 					event.tempnowuxie = (trigger.targets && trigger.targets.length > 1 && !trigger
 						.multitarget);
-					event.filterCard = function (card, player) {
+					event.filterCard = function(card, player) {
 						if (get.name(card) != 'wuxie') return false;
 						return lib.filter.cardEnabled(card, player, 'forceEnable');
 					};
-					event.send = function (player, state, isJudge, card, source, target, targets, id,
+					event.send = function(player, state, isJudge, card, source, target, targets, id,
 						id2, tempnowuxie, skillState) {
 						if (skillState) {
 							player.applySkills(skillState);
@@ -2396,7 +2397,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							}
 							ui.tempnowuxie = ui.create.control('不无懈' + translation, ui.click.tempnowuxie, 'stayleft');
 
-							if (lib.config.extension_手杀ui_yangshi == "on") {//修改无懈
+							if (lib.config.extension_手杀ui_yangshi == "on") { //修改无懈
 								/*var list=ui.control.childNodes;
 								list[0].classList.add('dou3');
 								 list[0].childNodes[0].setBackgroundImage('extension/手杀ui/lbtn/images/hu.png');*/
@@ -2406,7 +2407,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							ui.tempnowuxie._origin = id2;
 						}
 						var next = player.chooseToUse({
-							filterCard: function (card, player) {
+							filterCard: function(card, player) {
 								if (get.name(card) != 'wuxie') return false;
 								return lib.filter.cardEnabled(card, player,
 									'forceEnable');
@@ -2415,7 +2416,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							type: 'wuxie',
 							state: state,
 							_global_waiting: true,
-							ai1: function () {
+							ai1: function() {
 								if (isJudge) {
 									var name = card.viewAs || card.name;
 									var info = lib.card[name];
@@ -2425,7 +2426,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 										if (typeof aiii == 'number') return aiii;
 									}
 									if (Math.abs(get.attitude(_status.event.player,
-										source)) < 3) return 0;
+											source)) < 3) return 0;
 									if (source.hasSkillTag('nowuxie_judge') ||
 										source.hasSkillTag('guanxing') && (source !=
 											player || !source.hasSkill(
@@ -2471,7 +2472,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 										return -eff * state;
 									}
 									if (Math.abs(get.attitude(_status.event.player,
-										target)) < 3) return 0;
+											target)) < 3) return 0;
 									return -get.effect(target, card, source, _status
 										.event.player) * state;
 								} else {
@@ -2489,7 +2490,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 										if (typeof aiii == 'number') return aiii;
 									}
 									if (Math.abs(get.attitude(_status.event.player,
-										source)) < 3) return 0;
+											source)) < 3) return 0;
 									return -get.attitude(_status.event.player,
 										source) * state;
 								}
@@ -2512,7 +2513,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							next.nouse = true;
 						}
 					};
-					event.settle = function () {
+					event.settle = function() {
 						if (!event.state) {
 							if (event.triggername == 'phaseJudge') {
 								trigger.untrigger();
@@ -2523,7 +2524,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 									if (trigger.target.identity != 'ye' && trigger.target
 										.identity != 'unknown') {
 										trigger.getParent().excluded.addArray(game.filterPlayer(
-											function (current) {
+											function(current) {
 												return current.identity == trigger
 													.target.identity;
 											}));
@@ -2534,38 +2535,38 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						event.finish();
 					};
 					'step 1'
-					var list = game.filterPlayer(function (current) {
+					var list = game.filterPlayer(function(current) {
 						if (event.nowuxie) return false;
 						if (event.directHit && event.directHit.contains(current))
 							return false;
 						if (event.triggername == 'phaseJudge') {
 							if (game.checkMod(trigger.card, player, current, 'unchanged',
-								'wuxieJudgeEnabled', current) == false) return false;
+									'wuxieJudgeEnabled', current) == false) return false;
 							if (game.checkMod(trigger.card, player, current, 'unchanged',
-								'wuxieJudgeRespondable', player) == false) return false;
+									'wuxieJudgeRespondable', player) == false) return false;
 							if (event.stateplayer && event.statecard && (game.checkMod(event
-								.statecard, event.stateplayer, player, current,
-								'unchanged', 'wuxieRespondable', event.stateplayer
-							) == false)) return false;
+									.statecard, event.stateplayer, player, current,
+									'unchanged', 'wuxieRespondable', event.stateplayer
+								) == false)) return false;
 						} else {
 							if (!event.statecard && trigger.getParent().directHit.contains(
-								current)) return false;
+									current)) return false;
 							if (game.checkMod(trigger.card, player, trigger.target, current,
-								'unchanged', 'wuxieEnabled', current) == false)
+									'unchanged', 'wuxieEnabled', current) == false)
 								return false;
 							if (game.checkMod(trigger.card, player, trigger.target, current,
-								'unchanged', 'wuxieRespondable', player) == false)
+									'unchanged', 'wuxieRespondable', player) == false)
 								return false;
 							if (event.stateplayer && event.statecard && (game.checkMod(event
-								.statecard, event.stateplayer, trigger.player,
-								current, 'unchanged', 'wuxieRespondable', event
-								.stateplayer) == false)) return false;
+									.statecard, event.stateplayer, trigger.player,
+									current, 'unchanged', 'wuxieRespondable', event
+									.stateplayer) == false)) return false;
 						}
 						return current.hasWuxie();
 					});
 					event.list = list;
 					event.id = get.id();
-					list.sort(function (a, b) {
+					list.sort(function(a, b) {
 						return get.distance(event.source, a, 'absolute') - get.distance(
 							event.source, b, 'absolute');
 					});
@@ -2573,7 +2574,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					if (event.list.length == 0) {
 						event.settle();
 					} else if (_status.connectMode && (event.list[0].isOnline() || event.list[0] ==
-						game.me)) {
+							game.me)) {
 						event.goto(4);
 					} else {
 						event.current = event.list.shift();
@@ -2591,14 +2592,14 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					}
 					'step 4'
 					var id = event.id;
-					var sendback = function (result, player) {
+					var sendback = function(result, player) {
 						if (result && result.id == id && !event.wuxieresult && result.bool) {
 							event.wuxieresult = player;
 							event.wuxieresult2 = result;
 							game.broadcast('cancel', id);
 							if (_status.event.id == id && _status.event.name == 'chooseToUse' &&
 								_status.paused) {
-								return (function () {
+								return (function() {
 									event.resultOL = _status.event.resultOL;
 									ui.click.cancel();
 									if (ui.confirm) ui.confirm.close();
@@ -2607,7 +2608,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						} else {
 							if (_status.event.id == id && _status.event.name == 'chooseToUse' &&
 								_status.paused) {
-								return (function () {
+								return (function() {
 									event.resultOL = _status.event.resultOL;
 								});
 							}
@@ -2703,16 +2704,16 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					delete event.wuxieresult2;
 				}
 			}
-			return function (next) {
+			return function(next) {
 				app.waitAllFunction([
-					function (_next) {
+					function(_next) {
 						lib.init.css(lib.assetURL + 'extension/' + app.name, 'extension',
 							_next);
 					},
-					function (_next) {
-						app.loadPlugins(function () {
+					function(_next) {
+						app.loadPlugins(function() {
 							var plugins = app.plugins.slice(0);
-							var runNext = function () {
+							var runNext = function() {
 								var item = plugins.shift();
 								if (!item) return _next();
 								if (item.filter && !item.filter()) return runNext();
@@ -2727,10 +2728,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			};
 
 		},
-		precontent: function () {
+		precontent: function() {
 			//函数框架
 			/*隐藏结算界面*/
-			game.buttoncloseUI = function () {
+			game.buttoncloseUI = function() {
 				if (_status.showcloseUI) return false;
 				_status.showcloseUI = true;
 				ui.dialogs[0] && ui.dialogs[0].hide();
@@ -2753,7 +2754,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			}
 
 			/*回合外进度条框架*/
-			game.Jindutiaoplayer = function () {
+			game.Jindutiaoplayer = function() {
 
 				//----------------进度条主体---------------------//
 				if (window.timerpl) {
@@ -2809,10 +2810,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					var boxContentpl = document.createElement('div')
 					boxContentpl.setAttribute('id', 'jindutiaopl')
 					boxContentpl.style.cssText =
-						"width: 400px;height:13px;position: fixed;bottom:26.9%;box-shadow: 0 0 4px #000000;display: block;margin: 0 0 !important;left: calc(50% - 197px);"/*上下左右位置*/
+						"width: 400px;height:13px;position: fixed;bottom:26.9%;box-shadow: 0 0 4px #000000;display: block;margin: 0 0 !important;left: calc(50% - 197px);" /*上下左右位置*/
 
 					var boxTimepl = document.createElement('div')
-					boxTimepl.data = 395/*黄色条长度*/
+					boxTimepl.data = 395 /*黄色条长度*/
 					boxTimepl.style.cssText =
 						"width:399px;height:10px;margin:0 0 0 1px;background-color: #F4C336;border-top:1px solid #FFF;border-bottom:1px solid #FFF;border-left:1px solid #FFF;position: absolute;top: 1px;border-radius: 2px;"
 					boxContentpl.appendChild(boxTimepl)
@@ -2835,7 +2836,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				}
 
 				document.body.appendChild(boxContentpl)
-				window.timerpl = setInterval(function () {
+				window.timerpl = setInterval(function() {
 					boxTimepl.style.width = boxTimepl.data + 'px';
 					boxTimepl.data--;
 
@@ -2853,8 +2854,8 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			//----------------------------------------------------------------------------------------//
 
 			if (!window.chatRecord) window.chatRecord = [];
-			game.addChatWord = function (strx) {
-				if (window.chatRecord.length > 30) {//设置一下上限30条，不设也行，把这个if删除即可
+			game.addChatWord = function(strx) {
+				if (window.chatRecord.length > 30) { //设置一下上限30条，不设也行，把这个if删除即可
 					window.chatRecord.remove(window.chatRecord[0]);
 				}
 				if (strx) {
@@ -2869,8 +2870,8 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				if (window.chatBackground2 != undefined) game.updateChatWord(str);
 			}
 			//这里
-			game.showChatWordBackgroundX = function () {
-				if (window.chatBg != undefined && window.chatBg.show) {//控制面板打开，首次调用此函数时打开面板，再次调用时关闭
+			game.showChatWordBackgroundX = function() {
+				if (window.chatBg != undefined && window.chatBg.show) { //控制面板打开，首次调用此函数时打开面板，再次调用时关闭
 					window.chatBg.hide();
 					//关闭砸表情
 					if (window.jidan.thrownn) window.jidan.thrownn = false;
@@ -2882,21 +2883,21 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					window.chatBg.show = false;
 					if (window.dialog_lifesay) {
 						if (window.dialog_lifesay.show) window.dialog_lifesay.style.left = '-' + window.dialog_lifesay.style.width;
-						setTimeout(function () {
+						setTimeout(function() {
 							window.dialog_lifesay.hide();
 							window.dialog_lifesay.show = false;
 						}, 100);
 					}
 					if (window.dialog_emoji) {
 						if (window.dialog_emoji.show) window.dialog_emoji.style.top = '100%';
-						setTimeout(function () {
+						setTimeout(function() {
 							window.dialog_emoji.hide();
 							window.dialog_emoji.show = false;
 						}, 1000);
 					}
 					if (window.chatBackground) {
 						if (window.chatBackground.show) window.chatBackground.style.left = '100%';
-						setTimeout(function () {
+						setTimeout(function() {
 							window.chatBackground.hide();
 							window.chatBackground.show = false;
 						}, 1000);
@@ -2922,36 +2923,36 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.chatBg.style['box-shadow']='none';*/
 				ui.window.appendChild(window.chatBg);
 
-				var clickFK = function (div) {
+				var clickFK = function(div) {
 					div.style.transition = 'opacity 0.5s';
-					div.addEventListener(lib.config.touchscreen ? 'touchstart' : 'mousedown', function () {
+					div.addEventListener(lib.config.touchscreen ? 'touchstart' : 'mousedown', function() {
 						this.style.transform = 'scale(0.95)';
 					});
-					div.addEventListener(lib.config.touchscreen ? 'touchend' : 'mouseup', function () {
+					div.addEventListener(lib.config.touchscreen ? 'touchend' : 'mouseup', function() {
 						this.style.transform = '';
 					});
-					div.onmouseout = function () {
+					div.onmouseout = function() {
 						this.style.transform = '';
 					};
 				};
 				//--------------------------------//	
-				game.open_lifesay = function () {
+				game.open_lifesay = function() {
 					//打开常用语函数
 					if (window.dialog_emoji) {
 						if (window.dialog_emoji.show) window.dialog_emoji.style.top = '100%';
-						setTimeout(function () {
+						setTimeout(function() {
 							window.dialog_emoji.hide();
 							window.dialog_emoji.show = false;
 						}, 1000);
 					}
 					if (window.chatBackground) {
 						if (window.chatBackground.show) window.chatBackground.style.left = '100%';
-						setTimeout(function () {
+						setTimeout(function() {
 							window.chatBackground.hide();
 							window.chatBackground.show = false;
 						}, 1000);
 					}
-					if (window.dialog_lifesay != undefined && window.dialog_lifesay.show) {//控制面板打开，首次调用此函数时打开面板，再次调用时关闭
+					if (window.dialog_lifesay != undefined && window.dialog_lifesay.show) { //控制面板打开，首次调用此函数时打开面板，再次调用时关闭
 						window.dialog_lifesay.hide();
 						window.dialog_lifesay.show = false;
 						return;
@@ -2962,22 +2963,22 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					window.dialog_lifesay.classList.add('popped');
 					window.dialog_lifesay.classList.add('static');
 					window.dialog_lifesay.show = true;
-					window.dialog_lifesay.style.height = '300px';//整个常用语对话框的宽高
-					window.dialog_lifesay.style.width = '600px';//对话框的宽度，由每一条的内容字数决定，可自行调整，使用固定大小避免手机和电脑像素不同导致冲突
-					window.dialog_lifesay.style.left = '-' + window.dialog_lifesay.style.width;//这里弄一个右移的动画
-					setTimeout(function () {
-						window.dialog_lifesay.style.left = 'calc( 50% - 300px)';//整个对话框的位置
+					window.dialog_lifesay.style.height = '300px'; //整个常用语对话框的宽高
+					window.dialog_lifesay.style.width = '600px'; //对话框的宽度，由每一条的内容字数决定，可自行调整，使用固定大小避免手机和电脑像素不同导致冲突
+					window.dialog_lifesay.style.left = '-' + window.dialog_lifesay.style.width; //这里弄一个右移的动画
+					setTimeout(function() {
+						window.dialog_lifesay.style.left = 'calc( 50% - 300px)'; //整个对话框的位置
 					}, 100);
-					window.dialog_lifesay.style.top = 'calc( 20% - 100px)';//整个对话框的位置
+					window.dialog_lifesay.style.top = 'calc( 20% - 100px)'; //整个对话框的位置
 					window.dialog_lifesay.style.transition = 'all 1s';
 					window.dialog_lifesay.style.opacity = 1;
 					window.dialog_lifesay.style.borderRadius = '8px';
 					window.dialog_lifesay.style.backgroundSize = "100% 100%";
-					window.dialog_lifesay.setBackgroundImage('extension/手杀ui/sayplay/nobg.png');//把背景dialog设置为透明
+					window.dialog_lifesay.setBackgroundImage('extension/手杀ui/sayplay/nobg.png'); //把背景dialog设置为透明
 					window.dialog_lifesay.style['box-shadow'] = 'none';
 					ui.window.appendChild(window.dialog_lifesay);
 					dialogLife.background = window.dialog_lifesay;
-					window.dialog_lifesayBgPict = ui.create.div('hidden');//这是现在的背景颜色的div，外层div
+					window.dialog_lifesayBgPict = ui.create.div('hidden'); //这是现在的背景颜色的div，外层div
 					window.dialog_lifesayBgPict.style.height = '100%';
 					window.dialog_lifesayBgPict.style.width = '100%';
 					window.dialog_lifesayBgPict.style.left = '0%';
@@ -2987,18 +2988,18 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					window.dialog_lifesayBgPict.setBackgroundImage('extension/手杀ui/sayplay/saydiv.png');
 					window.dialog_lifesayBgPict.style['box-shadow'] = 'none';
 					window.dialog_lifesay.appendChild(window.dialog_lifesayBgPict);
-					window.dialog_lifesayBgColor = ui.create.div('hidden');//这是原来的背景颜色的div，内层div
+					window.dialog_lifesayBgColor = ui.create.div('hidden'); //这是原来的背景颜色的div，内层div
 					window.dialog_lifesayBgColor.style.height = '70%';
 					window.dialog_lifesayBgColor.style.width = '80%';
 					window.dialog_lifesayBgColor.style.left = '10%';
 					window.dialog_lifesayBgColor.style.top = '10%';
 					window.dialog_lifesayBgColor.style.borderRadius = '8px';
-					window.dialog_lifesayBgColor.setBackgroundImage('extension/手杀ui/sayplay/nobg.png');//把背景设置为透明
+					window.dialog_lifesayBgColor.setBackgroundImage('extension/手杀ui/sayplay/nobg.png'); //把背景设置为透明
 					//window.dialog_lifesayBgColor.style.backgroundColor='black';
 					window.dialog_lifesayBgColor.style['overflow-y'] = 'scroll';
 					lib.setScroll(window.dialog_lifesayBgColor);
 					window.dialog_lifesay.appendChild(window.dialog_lifesayBgColor);
-					window.lifesayWord = [//添加常用语
+					window.lifesayWord = [ //添加常用语
 						"能不能快点呀，兵贵神速啊",
 						"主公，别开枪，自己人",
 						"小内再不跳，后面还怎么玩啊",
@@ -3017,21 +3018,21 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						"妹子，交个朋友吧",
 					];
 					for (var i = 0; i < window.lifesayWord.length; i++) {
-						window['dialog_lifesayContent_' + i] = ui.create.div('hidden', '', function () {
+						window['dialog_lifesayContent_' + i] = ui.create.div('hidden', '', function() {
 							game.me.say(this.content);
 							window.dialog_lifesay.delete();
 							delete window.dialog_lifesay;
 							window.dialog_lifesay = undefined;
 							game.playAudio("..", "extension", "手杀ui/sayplay/audio", this.pos + "_" + game.me.sex);
 						});
-						window['dialog_lifesayContent_' + i].style.height = '10%';//每一条内容的高度，可以用px也可以用百分比，由你喜欢
-						window['dialog_lifesayContent_' + i].style.width = '100%';//每一条内容的宽度，默认与整个对话框宽度挂钩以美观，具体百分比可自己调整
+						window['dialog_lifesayContent_' + i].style.height = '10%'; //每一条内容的高度，可以用px也可以用百分比，由你喜欢
+						window['dialog_lifesayContent_' + i].style.width = '100%'; //每一条内容的宽度，默认与整个对话框宽度挂钩以美观，具体百分比可自己调整
 						window['dialog_lifesayContent_' + i].style.left = '0%';
 						window['dialog_lifesayContent_' + i].style.top = '0%';
 						window['dialog_lifesayContent_' + i].style.position = 'relative';
 						window['dialog_lifesayContent_' + i].pos = i;
 						window['dialog_lifesayContent_' + i].content = window.lifesayWord[i];
-						window['dialog_lifesayContent_' + i].innerHTML = '<font color=white>' + window.lifesayWord[i] + '</font>';//显示的字体可以自己改
+						window['dialog_lifesayContent_' + i].innerHTML = '<font color=white>' + window.lifesayWord[i] + '</font>'; //显示的字体可以自己改
 						window.dialog_lifesayBgColor.appendChild(window['dialog_lifesayContent_' + i]);
 						clickFK(window['dialog_lifesayContent_' + i]);
 					}
@@ -3052,9 +3053,9 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				clickFK(window.chatButton1);
 				//-----------------------------------//	
 				//-----------互动框---------//
-				game.open_hudong = function () {
+				game.open_hudong = function() {
 					//打开互动框函数
-					if (window.dialog_hudong != undefined && dialog_hudong.show) {//控制面板打开，首次调用此函数时打开面板，再次调用时关闭
+					if (window.dialog_hudong != undefined && dialog_hudong.show) { //控制面板打开，首次调用此函数时打开面板，再次调用时关闭
 						window.dialog_hudong.hide();
 						window.dialog_hudong.show = false;
 						return;
@@ -3076,12 +3077,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//-------------------------//
 
 				//------1--美酒-------//
-				game.open_meijiu = function () {
+				game.open_meijiu = function() {
 					//打开美酒函数
 					//这里
 					var list = game.players;
 					for (i = 0; i < game.players.length; i++) {
-						list[i].onclick = function () {
+						list[i].onclick = function() {
 							var target = this;
 							if (window.meijiu.thrownn == true) {
 								for (let i = 0; i < 10; i++) {
@@ -3109,7 +3110,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				window.meijiu.setBackgroundImage('extension/手杀ui/sayplay/meijiu.png');
 				//这里
-				window.meijiu.onclick = function () {
+				window.meijiu.onclick = function() {
 					window.meijiu.thrownn = true;
 				}
 				window.chatBg.appendChild(window.meijiu);
@@ -3119,12 +3120,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//-------------------//
 
 				//---2-----鲜花-------//
-				game.open_xianhua = function () {
+				game.open_xianhua = function() {
 					//打开鲜花函数
 					//这里
 					var list = game.players;
 					for (i = 0; i < game.players.length; i++) {
-						list[i].onclick = function () {
+						list[i].onclick = function() {
 							if (window.xianhua.thrownn == true)
 								game.me.throwEmotion(this, 'flower');
 							window.shuliang.innerText = window.shuliang.innerText - 1;
@@ -3138,7 +3139,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				window.xianhua.setBackgroundImage('extension/手杀ui/sayplay/xianhua.png');
 				//这里
-				window.xianhua.onclick = function () {
+				window.xianhua.onclick = function() {
 					window.xianhua.thrownn = true;
 				}
 
@@ -3152,13 +3153,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				//-----3---拖鞋-------//
 
-				game.open_tuoxie = function () {
+				game.open_tuoxie = function() {
 					//打开拖鞋函数
 					//这里
 					var list = game.players;
 					var num = 10;
 					for (i = 0; i < game.players.length; i++) {
-						list[i].onclick = function () {
+						list[i].onclick = function() {
 							var target = this;
 							if (window.tuoxie.thrownn == true) {
 								for (let i = 0; i < num; i++) {
@@ -3166,8 +3167,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 										if (i <= 8) {
 											game.me.throwEmotion(this, 'egg');
 											window.shuliang.innerText = window.shuliang.innerText - 1;
-										}
-										else {
+										} else {
 											game.me.throwEmotion(this, 'shoe');
 											window.shuliang.innerText = window.shuliang.innerText - 1;
 										}
@@ -3189,7 +3189,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				window.tuoxie.setBackgroundImage('extension/手杀ui/sayplay/tuoxie.png');
 				//这里
-				window.tuoxie.onclick = function () {
+				window.tuoxie.onclick = function() {
 					window.tuoxie.thrownn = true;
 				}
 
@@ -3203,12 +3203,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//-----4---鸡蛋-------//
 
 
-				game.open_jidan = function () {
+				game.open_jidan = function() {
 					//打开鸡蛋函数
 					//这里
 					var list = game.players;
 					for (i = 0; i < game.players.length; i++) {
-						list[i].onclick = function () {
+						list[i].onclick = function() {
 							if (window.jidan.thrownn == true) {
 								game.me.throwEmotion(this, 'egg');
 								window.shuliang.innerText = window.shuliang.innerText - 1;
@@ -3221,7 +3221,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				window.jidan = ui.create.div('hidden', '', game.open_jidan);
 				window.jidan.style.cssText = "display: block;--w: 63px;--h: calc(var(--w) * 50/50);width: var(--w);height: var(--h);left:-230px;bottom:105px;transition:none;background-size:100% 100%";
-				window.jidan.onclick = function () {
+				window.jidan.onclick = function() {
 					window.jidan.thrownn = true;
 				}
 
@@ -3239,11 +3239,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//-----5--菜篮-------//
 
 
-				game.open_cailan = function () {
+				game.open_cailan = function() {
 					//打开菜篮函数
 					var list = game.players;
 					for (i = 0; i < game.players.length; i++) {
-						list[i].onclick = function () {
+						list[i].onclick = function() {
 							var target = this;
 							if (window.cailan.thrownn == true) {
 								for (let i = 0; i < 101; i++) {
@@ -3269,7 +3269,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.cailan.style.cssText = "display: block;--w: 63px;--h: calc(var(--w) * 50/50);width: var(--w);height: var(--h);left:-80px;bottom:173px;transition:none;background-size:100% 100%";
 
 				window.cailan.setBackgroundImage('extension/手杀ui/sayplay/cailan.png');
-				window.cailan.onclick = function () {
+				window.cailan.onclick = function() {
 					window.cailan.thrownn = true;
 				}
 
@@ -3283,11 +3283,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//------6--七彩-------//
 
 
-				game.open_qicai = function () {
+				game.open_qicai = function() {
 					//打开七彩函数
 					var list = game.players;
 					for (i = 0; i < game.players.length; i++) {
-						list[i].onclick = function () {
+						list[i].onclick = function() {
 							var target = this;
 							if (window.qicai.thrownn == true) {
 								for (let i = 0; i < 101; i++) {
@@ -3313,7 +3313,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				window.qicai.setBackgroundImage('extension/手杀ui/sayplay/qicai.png');
 
-				window.qicai.onclick = function () {
+				window.qicai.onclick = function() {
 					window.qicai.thrownn = true;
 				}
 				window.chatBg.appendChild(window.qicai);
@@ -3326,7 +3326,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//-----7---小酒-------//
 
 
-				game.open_xiaojiu = function () {
+				game.open_xiaojiu = function() {
 					//打开小酒函数
 
 
@@ -3349,7 +3349,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//-----8---雪球------//
 
 
-				game.open_xueqiu = function () {
+				game.open_xueqiu = function() {
 					//打开雪球函数
 
 
@@ -3373,7 +3373,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//------9-虚无-------//
 
 
-				game.open_xuwu = function () {
+				game.open_xuwu = function() {
 					//打开虚无函数
 
 
@@ -3417,22 +3417,22 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 
 
-				game.open_emoji = function () {//打开emoji函数
+				game.open_emoji = function() { //打开emoji函数
 					if (window.dialog_lifesay) {
 						if (window.dialog_lifesay.show) window.dialog_lifesay.style.left = '-' + window.dialog_lifesay.style.width;
-						setTimeout(function () {
+						setTimeout(function() {
 							window.dialog_lifesay.hide();
 							window.dialog_lifesay.show = false;
 						}, 1000);
 					}
 					if (window.chatBackground) {
 						if (window.chatBackground.show) window.chatBackground.style.left = '100%';
-						setTimeout(function () {
+						setTimeout(function() {
 							window.chatBackground.hide();
 							window.chatBackground.show = false;
 						}, 1000);
 					}
-					if (window.dialog_emoji != undefined && window.dialog_emoji.show) {//控制面板打开，首次调用此函数时打开面板，再次调用时关闭
+					if (window.dialog_emoji != undefined && window.dialog_emoji.show) { //控制面板打开，首次调用此函数时打开面板，再次调用时关闭
 						window.dialog_emoji.hide();
 						window.dialog_emoji.show = false;
 						return;
@@ -3443,22 +3443,22 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					window.dialog_emoji.classList.add('popped');
 					window.dialog_emoji.classList.add('static');
 					window.dialog_emoji.show = true;
-					window.dialog_emoji.style.height = '280px';//整个选择emoji对话框的宽高
+					window.dialog_emoji.style.height = '280px'; //整个选择emoji对话框的宽高
 					window.dialog_emoji.style.width = '360px';
 					window.dialog_emoji.style.left = 'calc( 50% - 180px)';
-					window.dialog_emoji.style.top = '100%';//这里弄一个上移的动画
+					window.dialog_emoji.style.top = '100%'; //这里弄一个上移的动画
 					window.dialog_emoji.style.transition = 'all 1s';
-					setTimeout(function () {
-						window.dialog_emoji.style.top = 'calc( 25% - 50px )';//上移后的位置
+					setTimeout(function() {
+						window.dialog_emoji.style.top = 'calc( 25% - 50px )'; //上移后的位置
 					}, 100);
 					window.dialog_emoji.style.opacity = 1;
 					window.dialog_emoji.style.borderRadius = '8px';
 					window.dialog_emoji.style.backgroundSize = "100% 100%";
-					window.dialog_emoji.setBackgroundImage('extension/手杀ui/sayplay/nobg.png');//把背景dialog设置为透明
+					window.dialog_emoji.setBackgroundImage('extension/手杀ui/sayplay/nobg.png'); //把背景dialog设置为透明
 					window.dialog_emoji.style['box-shadow'] = 'none';
 					ui.window.appendChild(window.dialog_emoji);
 					dialogEmoji.background = window.dialog_emoji;
-					window.dialog_emojiBgPict = ui.create.div('hidden');//这是现在外层div
+					window.dialog_emojiBgPict = ui.create.div('hidden'); //这是现在外层div
 					window.dialog_emojiBgPict.style.height = '100%';
 					window.dialog_emojiBgPict.style.width = '100%';
 					window.dialog_emojiBgPict.style.left = '0%';
@@ -3468,25 +3468,25 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					window.dialog_emojiBgPict.setBackgroundImage('extension/手杀ui/sayplay/saydiv.png');
 					window.dialog_emojiBgPict.style['box-shadow'] = 'none';
 					window.dialog_emoji.appendChild(window.dialog_emojiBgPict);
-					window.dialog_emojiBgColor = ui.create.div('hidden');//这是内层div
+					window.dialog_emojiBgColor = ui.create.div('hidden'); //这是内层div
 					window.dialog_emojiBgColor.style.height = '70%';
 					window.dialog_emojiBgColor.style.width = '80%';
 					window.dialog_emojiBgColor.style.left = '10%';
 					window.dialog_emojiBgColor.style.top = '10%';
 					window.dialog_emojiBgColor.style.borderRadius = '8px';
 					window.dialog_emojiBgColor.style.backgroundSize = "100% 100%";
-					window.dialog_emojiBgColor.setBackgroundImage('extension/手杀ui/sayplay/nobg.png');//把背景设置为透明
+					window.dialog_emojiBgColor.setBackgroundImage('extension/手杀ui/sayplay/nobg.png'); //把背景设置为透明
 					window.dialog_emojiBgColor.style['overflow-y'] = 'scroll';
 					lib.setScroll(window.dialog_emojiBgColor);
 					window.dialog_emoji.appendChild(window.dialog_emojiBgColor);
 					for (var i = 0; i < 50; i++) {
-						window['dialog_emojiContent_' + i] = ui.create.div('hidden', '', function () {
+						window['dialog_emojiContent_' + i] = ui.create.div('hidden', '', function() {
 							game.me.say('<img style=width:34px height:34px src="' + lib.assetURL + 'extension/手杀ui/sayplay/emoji/' + this.pos + '.png">');
 							window.dialog_emoji.delete();
 							delete window.dialog_emoji;
 							window.dialog_emoji = undefined;
 						});
-						window['dialog_emojiContent_' + i].style.height = '34px';//单个表情的宽高
+						window['dialog_emojiContent_' + i].style.height = '34px'; //单个表情的宽高
 						window['dialog_emojiContent_' + i].style.width = '34px';
 						window['dialog_emojiContent_' + i].style.left = '0px';
 						window['dialog_emojiContent_' + i].style.top = '0px';
@@ -3512,7 +3512,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.chatBg.appendChild(window.chatButton2);
 				clickFK(window.chatButton2);
 
-				game.open_jilu = function () {//打开记录函数
+				game.open_jilu = function() { //打开记录函数
 					game.showChatWord();
 				}
 				window.chatButton3 = ui.create.div('hidden', '', game.open_jilu);
@@ -3529,7 +3529,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.chatBg.appendChild(window.chatButton3);
 				clickFK(window.chatButton3);
 
-				window.chatSendBottom = ui.create.div('', '', function () {//发送按钮
+				window.chatSendBottom = ui.create.div('', '', function() { //发送按钮
 					if (!window.input) return;
 					if (window.input.value == undefined) return;
 					window.sendInfo(window.input.value);
@@ -3548,12 +3548,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.chatSendBottom.innerHTML = '<span style="color:white;font-size:22px;line-height:32px;font-weight:400;font-family:shousha">发送</span>';
 				window.chatBg.appendChild(window.chatSendBottom);
 				clickFK(window.chatSendBottom);
-				game.updateChatWord = function (str) {
+				game.updateChatWord = function(str) {
 					window.chatBackground2.innerHTML = str;
 				}
 				game.addChatWord();
 
-				window.sendInfo = function (content) {
+				window.sendInfo = function(content) {
 					game.me.say(content);
 					window.input.value = '';
 				}
@@ -3572,7 +3572,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				//输入框
 				window.chatInput = ui.create.dialog('hidden');
 				window.chatInput.style.height = '22px';
-				window.chatInput.style.width = '42%';//设置输入框宽度
+				window.chatInput.style.width = '42%'; //设置输入框宽度
 				window.chatInput.style.left = '27%';
 				window.chatInput.style.top = '42px';
 				window.chatInput.style.transition = 'none';
@@ -3592,13 +3592,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.input.style.backgroundImage = "url('" + lib.assetURL + "extension/手杀ui/sayplay/say.png')";
 				window.input.style.backgroundSize = "120% 120%";
 				window.input.style['box-shadow'] = 'none';
-				window.input.onclick = function (e) {
+				window.input.onclick = function(e) {
 					e.stopPropagation();
 				};
-				window.input.onfocus = function () {
+				window.input.onfocus = function() {
 					if (this.value == '请输入文字') this.value = '';
 				};
-				window.input.onkeydown = function (e) {
+				window.input.onkeydown = function(e) {
 					e.stopPropagation();
 					if (e.keyCode == 13) {
 						var value = this.value;
@@ -3611,22 +3611,22 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			}
 
 			//聊天记录栏
-			game.showChatWord = function () {
+			game.showChatWord = function() {
 				if (window.dialog_lifesay) {
 					if (window.dialog_lifesay.show) window.dialog_lifesay.style.left = '-' + window.dialog_lifesay.style.width;
-					setTimeout(function () {
+					setTimeout(function() {
 						window.dialog_lifesay.hide();
 						window.dialog_lifesay.show = false;
 					}, 1000);
 				}
 				if (window.dialog_emoji) {
 					if (window.dialog_emoji.show) window.dialog_emoji.style.top = '100%';
-					setTimeout(function () {
+					setTimeout(function() {
 						window.dialog_emoji.hide();
 						window.dialog_emoji.show = false;
 					}, 1000);
 				}
-				if (window.chatBackground != undefined && window.chatBackground.show) {//控制面板打开，首次调用此函数时打开面板，再次调用时关闭
+				if (window.chatBackground != undefined && window.chatBackground.show) { //控制面板打开，首次调用此函数时打开面板，再次调用时关闭
 					window.chatBackground.hide();
 					window.chatBackground.show = false;
 					return;
@@ -3637,28 +3637,27 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.chatBackground.classList.add('static');
 				window.chatBackground.show = true;
 				window.chatBackground.style.transition = 'all 1s';
-				window.chatBackground.style.height = '330px';//调整对话框背景大小，位置
+				window.chatBackground.style.height = '330px'; //调整对话框背景大小，位置
 				window.chatBackground.style.width = '600px';
-				window.chatBackground.style.top = 'calc( 20% - 100px )';//这里弄一个左移的动画
-				window.chatBackground.style.left = '100%';//这里弄一个左移的动画
-				setTimeout(function () {
-					window.chatBackground.style.left = 'calc( 50% - 300px)';//左移后的位置
+				window.chatBackground.style.top = 'calc( 20% - 100px )'; //这里弄一个左移的动画
+				window.chatBackground.style.left = '100%'; //这里弄一个左移的动画
+				setTimeout(function() {
+					window.chatBackground.style.left = 'calc( 50% - 300px)'; //左移后的位置
 				}, 100);
 				window.chatBackground.style.bottom = 'calc( ' + window.chatBg.style.height + ' + ' + '5px )';
 				window.chatBackground.style.opacity = 1;
 				window.chatBackground.style.borderRadius = '10px';
-				game.mouseChatDiv = function (div) {
-					;//查看时显示，不查看时，对话框虚化
+				game.mouseChatDiv = function(div) {
+					; //查看时显示，不查看时，对话框虚化
 					if (lib.device == undefined) {
-						div.onmouseover = function () {
+						div.onmouseover = function() {
 							this.style.opacity = 1.0;
 						};
-						div.onmouseout = function () {
+						div.onmouseout = function() {
 							this.style.opacity = 0.25;
 						};
-					}
-					else {
-						div.onclick = function () {
+					} else {
+						div.onclick = function() {
 							if (div.style.opacity == 0.25) this.style.opacity = 0.75;
 							else this.style.opacity = 0.25;
 						}
@@ -3666,11 +3665,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				}
 				game.mouseChatDiv(window.chatBackground);
 				window.chatBackground.style.backgroundSize = "100% 100%";
-				window.chatBackground.setBackgroundImage('extension/手杀ui/sayplay/nobg.png');//把背景dialog设置为透明
+				window.chatBackground.setBackgroundImage('extension/手杀ui/sayplay/nobg.png'); //把背景dialog设置为透明
 				window.chatBackground.style['box-shadow'] = 'none';
 				ui.window.appendChild(window.chatBackground);
 
-				window.chatBackgroundPict = ui.create.div('hidden');//外层div
+				window.chatBackgroundPict = ui.create.div('hidden'); //外层div
 				window.chatBackgroundPict.style.height = '100%';
 				window.chatBackgroundPict.style.width = '100%';
 				window.chatBackgroundPict.style.left = '0%';
@@ -3683,7 +3682,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.chatBackgroundPict.style['box-shadow'] = 'none';
 				window.chatBackground.appendChild(window.chatBackgroundPict);
 
-				window.chatBackgroundColor = ui.create.div('hidden');//内层div
+				window.chatBackgroundColor = ui.create.div('hidden'); //内层div
 				window.chatBackgroundColor.style.height = '70%';
 				window.chatBackgroundColor.style.width = '80%';
 				window.chatBackgroundColor.style.left = '10%';
@@ -3691,7 +3690,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				window.chatBackgroundColor.style.transition = 'none';
 				window.chatBackgroundColor.style.borderRadius = '8px';
 				window.chatBackgroundColor.style.backgroundSize = "100% 100%";
-				window.chatBackgroundColor.setBackgroundImage('extension/手杀ui/sayplay/nobg.png');//把背景设置为透明
+				window.chatBackgroundColor.setBackgroundImage('extension/手杀ui/sayplay/nobg.png'); //把背景设置为透明
 				window.chatBackground.appendChild(window.chatBackgroundColor);
 
 				window.chatBackground2 = ui.create.div('hidden');
@@ -3713,13 +3712,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					global: ["gameStart", "phaseBegin", "phaseAfter", "useCardAfter"],
 				},
 				forced: true,
-				filter: function (event, player) {
+				filter: function(event, player) {
 					return player.change_sayFunction != true;
 				},
-				content: function () {
+				content: function() {
 					player.change_sayFunction = true;
 					player.sayTextWord = player.say;
-					player.say = function (str) {//对应上面函数，把其他player的发言记录到框里
+					player.say = function(str) { //对应上面函数，把其他player的发言记录到框里
 						game.addChatWord('<font color=yellow>' + get.translation('' + player.name) + '</font><font color=white>：' + str + '</font>');
 						player.sayTextWord(str);
 					}
@@ -3735,7 +3734,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 			//阶段提示框架（俺杀）
 			//自定义播放图片
-			game.as_removeText = function () {
+			game.as_removeText = function() {
 				if (_status.as_showText) {
 					_status.as_showText.remove();
 					delete _status.as_showText;
@@ -3744,7 +3743,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					_status.as_showImage.show();
 				}
 			}
-			game.as_showText = function (str, pos, time, font, size, color) {
+			game.as_showText = function(str, pos, time, font, size, color) {
 				if (!str) return false;
 				if (!pos || !Array.isArray(pos)) {
 					pos = [0, 0, 100, 100];
@@ -3770,13 +3769,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					_status.as_showImage.hide();
 				}
 
-				setTimeout(function () {
+				setTimeout(function() {
 					div.style.left = pos[0] + '%';
 					div.style.width = pos[2] + '%';
 				}, 1);
 
 				if (time === true) return true;
-				setTimeout(function () {
+				setTimeout(function() {
 					if (_status.as_showText) {
 						_status.as_showText.remove();
 						delete _status.as_showText;
@@ -3788,13 +3787,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				return true;
 			}
-			game.as_removeImage = function () {
+			game.as_removeImage = function() {
 				if (_status.as_showImage) {
 					_status.as_showImage.remove();
 					delete _status.as_showImage;
 				}
 			}
-			game.as_showImage = function (url, pos, time) {
+			game.as_showImage = function(url, pos, time) {
 				if (!url) return false;
 				if (!pos || !Array.isArray(pos)) {
 					pos = [0, 0, 100, 100];
@@ -3816,13 +3815,13 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					_status.as_showImage.hide();
 				}
 
-				setTimeout(function () {
+				setTimeout(function() {
 					div.style.left = pos[0] + '%';
 					div.style.width = pos[2] + '%';
 				}, 1);
 
 				if (time === true) return true;
-				setTimeout(function () {
+				setTimeout(function() {
 					if (_status.as_showImage) {
 						_status.as_showImage.remove();
 						delete _status.as_showImage;
@@ -3835,7 +3834,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 			// if (get.mode() == 'boss') return
 
-			lib.init.onload = function () {
+			lib.init.onload = function() {
 				ui.updated();
 				game.documentZoom = game.deviceZoom;
 				if (game.documentZoom != 1) {
@@ -3860,12 +3859,12 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				document.body.insertBefore(ui.background, document.body.firstChild);
 				document.body.onresize = ui.updatexr;
 				if (lib.config.touchscreen) {
-					document.body.addEventListener('touchstart', function (e) {
+					document.body.addEventListener('touchstart', function(e) {
 						this.startX = e.touches[0].clientX / game.documentZoom;
 						this.startY = e.touches[0].clientY / game.documentZoom;
 						_status.dragged = false;
 					});
-					document.body.addEventListener('touchmove', function (e) {
+					document.body.addEventListener('touchmove', function(e) {
 						if (_status.dragged) return;
 						if (Math.abs(e.touches[0].clientX / game.documentZoom - this.startX) >
 							10 ||
@@ -3878,10 +3877,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 
 				if (lib.config.image_background.indexOf('custom_') == 0) {
 					ui.background.style.backgroundImage = "none";
-					game.getDB('image', lib.config.image_background, function (fileToLoad) {
+					game.getDB('image', lib.config.image_background, function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							var data = fileLoadedEvent.target.result;
 							ui.background.style.backgroundImage = 'url(' + data + ')';
 							if (lib.config.image_background_blur) {
@@ -3894,10 +3893,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					});
 				}
 				if (lib.config.card_style == 'custom') {
-					game.getDB('image', 'card_style', function (fileToLoad) {
+					game.getDB('image', 'card_style', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.card_stylesheet) {
 								ui.css.card_stylesheet.remove();
 							}
@@ -3909,10 +3908,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					});
 				}
 				if (lib.config.cardback_style == 'custom') {
-					game.getDB('image', 'cardback_style', function (fileToLoad) {
+					game.getDB('image', 'cardback_style', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.cardback_stylesheet) {
 								ui.css.cardback_stylesheet.remove();
 							}
@@ -3922,10 +3921,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						};
 						fileReader.readAsDataURL(fileToLoad, "UTF-8");
 					});
-					game.getDB('image', 'cardback_style2', function (fileToLoad) {
+					game.getDB('image', 'cardback_style2', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.cardback_stylesheet2) {
 								ui.css.cardback_stylesheet2.remove();
 							}
@@ -3937,10 +3936,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					});
 				}
 				if (lib.config.hp_style == 'custom') {
-					game.getDB('image', 'hp_style1', function (fileToLoad) {
+					game.getDB('image', 'hp_style1', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.hp_stylesheet1) {
 								ui.css.hp_stylesheet1.remove();
 							}
@@ -3950,10 +3949,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						};
 						fileReader.readAsDataURL(fileToLoad, "UTF-8");
 					});
-					game.getDB('image', 'hp_style2', function (fileToLoad) {
+					game.getDB('image', 'hp_style2', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.hp_stylesheet2) {
 								ui.css.hp_stylesheet2.remove();
 							}
@@ -3963,10 +3962,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						};
 						fileReader.readAsDataURL(fileToLoad, "UTF-8");
 					});
-					game.getDB('image', 'hp_style3', function (fileToLoad) {
+					game.getDB('image', 'hp_style3', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.hp_stylesheet3) {
 								ui.css.hp_stylesheet3.remove();
 							}
@@ -3976,10 +3975,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						};
 						fileReader.readAsDataURL(fileToLoad, "UTF-8");
 					});
-					game.getDB('image', 'hp_style4', function (fileToLoad) {
+					game.getDB('image', 'hp_style4', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.hp_stylesheet4) {
 								ui.css.hp_stylesheet4.remove();
 							}
@@ -3993,10 +3992,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 				if (lib.config.player_style == 'custom') {
 					ui.css.player_stylesheet = lib.init.sheet(
 						'#window .player{background-image:none;background-size:100% 100%;}');
-					game.getDB('image', 'player_style', function (fileToLoad) {
+					game.getDB('image', 'player_style', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.player_stylesheet) {
 								ui.css.player_stylesheet.remove();
 							}
@@ -4009,10 +4008,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					});
 				}
 				if (lib.config.border_style == 'custom') {
-					game.getDB('image', 'border_style', function (fileToLoad) {
+					game.getDB('image', 'border_style', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.border_stylesheet) {
 								ui.css.border_stylesheet.remove();
 							}
@@ -4028,10 +4027,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					});
 				}
 				if (lib.config.control_style == 'custom') {
-					game.getDB('image', 'control_style', function (fileToLoad) {
+					game.getDB('image', 'control_style', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.control_stylesheet) {
 								ui.css.control_stylesheet.remove();
 							}
@@ -4043,10 +4042,10 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					});
 				}
 				if (lib.config.menu_style == 'custom') {
-					game.getDB('image', 'menu_style', function (fileToLoad) {
+					game.getDB('image', 'menu_style', function(fileToLoad) {
 						if (!fileToLoad) return;
 						var fileReader = new FileReader();
-						fileReader.onload = function (fileLoadedEvent) {
+						fileReader.onload = function(fileLoadedEvent) {
 							if (ui.css.menu_stylesheet) {
 								ui.css.menu_stylesheet.remove();
 							}
@@ -4059,7 +4058,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					});
 				}
 
-				var proceed2 = function () {
+				var proceed2 = function() {
 					var mode = lib.imported.mode;
 					var card = lib.imported.card;
 					var character = lib.imported.character;
@@ -4184,7 +4183,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 									}
 								}
 								if (j == 'skill' && k[0] == '_' && (!lib.config.characters.contains(
-									i) || (lib.config.mode == 'connect' && !character[i]
+										i) || (lib.config.mode == 'connect' && !character[i]
 										.connect))) {
 									continue;
 								}
@@ -4209,7 +4208,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 											}
 										}
 									} else if (Array.isArray(lib[j][k]) && Array.isArray(character[
-										i][j][k])) {
+											i][j][k])) {
 										lib[j][k].addArray(character[i][j][k]);
 									} else {
 										console.log('dublicate ' + j + ' in character ' + i +
@@ -4292,7 +4291,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							} else {
 								for (k in card[i][j]) {
 									if (j == 'skill' && k[0] == '_' && (!lib.config.cards.contains(
-										i) || (lib.config.mode == 'connect' && !card[i]
+											i) || (lib.config.mode == 'connect' && !card[i]
 											.connect))) {
 										continue;
 									}
@@ -4384,7 +4383,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 										if (lib[j][k] != undefined) {
 											console.log('dublicate ' + j + ' in play ' + i + ':\n' +
 												k + '\n' + ': ' + lib[j][k] + '\n' + play[i][j][
-												k
+													k
 												]);
 										}
 										lib[j][k] = play[i][j][k];
@@ -4453,7 +4452,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						}
 					}
 
-					var loadExtensionCallback = function () {
+					var loadExtensionCallback = function() {
 						delete lib.extensions;
 
 						if (lib.init.startBefore) {
@@ -4474,7 +4473,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						app.emit('createArenaAfter');
 					};
 					if (!_status.connectMode) {
-						var loadNextExtension = function () {
+						var loadNextExtension = function() {
 							var obj = lib.extensions.shift();
 							if (obj) {
 								try {
@@ -4498,7 +4497,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 											for (var j in obj[4].skill.skill) {
 												game.addSkill(j, obj[4].skill.skill[j],
 													obj[4].skill.translate[j], obj[4].skill
-														.translate[j + '_info']);
+													.translate[j + '_info']);
 											}
 										}
 									}
@@ -4523,7 +4522,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						loadExtensionCallback();
 					}
 				}
-				var proceed = function () {
+				var proceed = function() {
 					if (!lib.db) {
 						try {
 							lib.storage = JSON.parse(localStorage.getItem(lib.configprefix + lib
@@ -4536,7 +4535,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						}
 						proceed2();
 					} else {
-						game.getDB('data', lib.config.mode, function (obj) {
+						game.getDB('data', lib.config.mode, function(obj) {
 							lib.storage = obj || {};
 							proceed2();
 						});
@@ -4548,7 +4547,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					clearTimeout(window.resetGameTimeout);
 					delete window.resetGameTimeout;
 					var clickedNode = false;
-					var clickNode = function () {
+					var clickNode = function() {
 						if (clickedNode) return;
 						this.classList.add('clicked');
 						clickedNode = true;
@@ -4573,14 +4572,14 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 						delete window.inSplash;
 						window.resetGameTimeout = setTimeout(lib.init.reset, 5000);
 
-						this.listenTransition(function () {
+						this.listenTransition(function() {
 							lib.init.js(lib.assetURL + 'mode', lib.config.mode, proceed);
 						}, 500);
 					}
-					var downNode = function () {
+					var downNode = function() {
 						this.classList.add('glow');
 					}
-					var upNode = function () {
+					var upNode = function() {
 						this.classList.remove('glow');
 					}
 					var splash = ui.create.div('#splash', document.body);
@@ -4634,8 +4633,8 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 							node.addEventListener('mouseup', upNode);
 							node.addEventListener('mouseleave', upNode);
 						}
-						setTimeout((function (node) {
-							return function () {
+						setTimeout((function(node) {
+							return function() {
 								node.show();
 							}
 						}(node)), i * 100);
@@ -4659,7 +4658,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			KZJS: {
 				name: '<div class="shousha_menu">扩展介绍·点击展开</div>',
 				clear: true,
-				onclick: function () {
+				onclick: function() {
 					if (this.KZJS == undefined) {
 						var more = ui.create.div('.KZJS', '<div class="shousha_text">' + '<li>由于游戏本体更新，新版本目前没技术进行适配，请在本体game.js里注释下图的两句代码。ಥ_ಥ<br>' + '<img style=width:240px src=' + lib.assetURL + 'extension/手杀ui/cancanwo.jpg>' + '<br>本扩展偏向于细节上的美化，附带一点娱乐性，需要搭配十周年UI使用，以便拥有更好的扩展体验<br><li>在众多大佬的帮助下，本扩展拥有了很高的还原度。感谢为爱发电的大佬们。无名杀是一款非盈利游戏，祝你游戏愉快' + '</div>');
 						this.parentNode.insertBefore(more, this.nextSibling);
@@ -4676,11 +4675,11 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			GXSM: {
 				name: '<div class="shousha_menu">更新说明(点击查看)</div>',
 				clear: true,
-				onclick: function () {
+				onclick: function() {
 					var h = document.body.offsetHeight;
 					var w = document.body.offsetWidth;
 					shousha_update = ui.create.div('.shousha_update', '<div><iframe width="' + w + 'px" height="' + h + 'px"  src="' + lib.assetURL + 'extension/手杀ui/update.html" ></iframe></div>', ui.window);
-					shousha_update_close = ui.create.div('.shousha_update_close', shousha_update, function () {
+					shousha_update_close = ui.create.div('.shousha_update_close', shousha_update, function() {
 						shousha_update.delete()
 					});
 
@@ -4713,7 +4712,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 					"19": "群小乔",
 
 				},
-				"textMenu": function (node, link) {
+				"textMenu": function(node, link) {
 					lib.setScroll(node.parentNode);
 					node.parentNode.style.transform = "translateY(-100px)";
 					node.parentNode.style.height = "500px";
@@ -4809,7 +4808,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			JDTSM: {
 				name: '<div class="shousha_menu">进度条·查看</div>',
 				clear: true,
-				onclick: function () {
+				onclick: function() {
 					if (this.JDTSM == undefined) {
 						var more = ui.create.div('.JDTSM', '<div class="shousha_text"><li><b>进度条</b>:完善时机包括玩家回合内、人机回合内、玩家回合外、人机回合外。<li><b>进度条时间间隔</b>:设置玩家进度条的时间间隔，默认100毫秒/次<li><b>时间间隔</b>：通俗点说，就是进度条刷新的自定义时间单位/次。时间间隔越小，进度条总时间越少，反之亦然。<li><b>切换不生效？</b>:在游戏里切换时间间隔后不会马上生效，会在下一次进度条出现时生效。</div>');
 						this.parentNode.insertBefore(more, this.nextSibling);
@@ -4866,7 +4865,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			JDTSSM: {
 				name: '<div class="shousha_menu">阶段提示·查看</div>',
 				clear: true,
-				onclick: function () {
+				onclick: function() {
 					if (this.JDTSSM == undefined) {
 						var more = ui.create.div('.JDTSSM', '<div class="shousha_text"><li><b>阶段提示</b>:回合开始、判定阶段、摸牌阶段、出牌阶段、弃牌阶段、等待响应、对方思考中，其中[对方思考中]，在游戏人数不大于两人时才会出现。<li><b>位置微调</b>：在游玩太虚幻境模式或者使用Eng侍灵扩展时，为避免遮挡，会自动判断并调整阶段提示位置<li><b>人机也有？</b>:人机做了进度条美化和阶段提示美化，样式跟随UI切换。</div>');
 						this.parentNode.insertBefore(more, this.nextSibling);
@@ -4907,7 +4906,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			GTBBSM: {
 				name: '<div class="shousha_menu">狗托播报·查看</div>',
 				clear: true,
-				onclick: function () {
+				onclick: function() {
 					if (this.GTBBSM == undefined) {
 						var more = ui.create.div('.GTBBSM', '<div class="shousha_text"><li><b>狗托播报</b>:开启后，顶部会出现滚动播报栏。PS:狗托误我啊!<li><b>播报样式</b>：新增一种样式，可选择切换，需重启。【手杀/十周年】<li><b>播报时间间隔</b>:需重启，调整每条播报的出现频率。</div>');
 						this.parentNode.insertBefore(more, this.nextSibling);
@@ -4969,7 +4968,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			JMYSSM: {
 				name: '<div class="shousha_menu">界面样式·查看</div>',
 				clear: true,
-				onclick: function () {
+				onclick: function() {
 					if (this.JMYSSM == undefined) {
 						var more = ui.create.div('.JMYSSM', '<div class="shousha_text"><li><b>样式选择</b>:分为手杀样式和十周年样式<li><b>手杀布局</b>：点击左上角的小问号可以查看玩家当前身份提示。身份提示，做了多模式的完善。点击牌序可以切换[自动牌序]or[手动牌序]，左下角的菜篮子现在可以点砸蛋送花了。<li><b>十周年布局</b>:在此布局下点击小配件，可以选择切换左下角的素材样式（重启后生效）。点击右上角小问号可以查看玩家当前身份提示</div>');
 						this.parentNode.insertBefore(more, this.nextSibling);
@@ -5012,7 +5011,7 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			QTMHSM: {
 				name: '<div class="shousha_menu">其他美化·查看</div>',
 				clear: true,
-				onclick: function () {
+				onclick: function() {
 					if (this.QTMHSM == undefined) {
 						var more = ui.create.div('.QTMHSM', '<div class="shousha_text"><li><b>开关美化</b>:开启后重启，将用美化素材替换掉游戏菜单的所有开关。<li><b>启动页</b>：可以更改游戏初始界面的游戏画面。分为动态，大图两种。<li><b>结算界面隐藏</b>:开启后，在没有安装【假装无敌】扩展时，游戏结束后会直接关闭结算界面，反之会在结算界面上添加[隐藏结算]按钮。</div>');
 						this.parentNode.insertBefore(more, this.nextSibling);
