@@ -961,13 +961,8 @@ game.import('extension', function (lib, game, ui, get, ai, _status) {
 			//----------------------------------------------------------------------------------------------------------------------------------//	
 
 			//----文本翻译---//
-			//lib.translate.muniu = '木牛流马';
-/*lib.translate.miaojian = '妙剑1级';
-lib.translate.miaojian1 = '妙剑2级';
-lib.translate.miaojian2 = '妙剑3级';
-lib.translate.shhlianhua = '莲华1级';
-lib.translate.shhlianhua1 = '莲华2级';
-lib.translate.shhlianhua2 = '莲华3级';*/
+			lib.translate.muniu = '木牛';
+
 			//-------出牌中提示(手杀/十周年)---------//
 
 			lib.skill._chupaiA = {
@@ -1961,27 +1956,31 @@ lib.translate.shhlianhua2 = '莲华3级';*/
 			//玩家进度条
 			if (get.mode() != 'connect' && config.jindutiao == true) {
 
-				lib.onover.push(function(bool) {
+				lib.onover.push(function (bool) {
 					if (document.getElementById("jindutiao")) {
 						document.getElementById("jindutiao").remove()
+					}
+					if (document.getElementById("jindutiaopl")) {
+						document.getElementById("jindutiaopl").remove()
 					}
 
 				});
 
 				lib.skill._jindutiao = {
 					trigger: {
-						player: ['phaseBegin', 'useCardAfter']
+						player: ['phaseZhunbeiBegin', 'phaseBegin', 'phaseJudgeBegin', 'phaseDrawBegin', 'useCardAfter', 'phaseDiscardBegin', 'useSkill', 'loseAfter']
 					},
-					filter: function(event, player) {
-						return player == game.me && _status.currentPhase == player && _status
-							.auto == false;
+					filter: function (event, player) {
+						if (document.querySelector("#jindutiao")) return false;
+						return player == game.me && _status.currentPhase == player;
 					},
 					forced: true,
 
-					content: function() {
+					content: function () {
 
 						if (window.timer) {
 							clearInterval(window.timer);
+							delete window.timer;
 						}
 
 						if (document.getElementById("jindutiao")) {
@@ -1994,9 +1993,9 @@ lib.translate.shhlianhua2 = '莲华3级';*/
 							var boxContent = document.createElement('div')
 							boxContent.setAttribute('id', 'jindutiao')
 							boxContent.style.cssText =
-								"background-color: rgba(0,0,0,0.4);width: 580px;height:12.3px;border-radius: 1000px;box-shadow:0px 0px 9px #2e2b27 inset,0px 0px 2.1px #FFFFD5;overflow: hidden;border:1.2px solid #000000;position: fixed;bottom: calc(23% + 13.5px);left: calc(50% - 300px); z-index: -0.5;"
+								"background-color: rgba(0,0,0,0.4);width: 620px;height:12.3px;border-radius: 1000px;box-shadow:0px 0px 9px #2e2b27 inset,0px 0px 2.1px #FFFFD5;overflow: hidden;border:1.2px solid #000000;position: fixed;bottom:26.3%;left: calc(50% - 300px);"
 							var boxTime = document.createElement('div')
-							boxTime.data = 580
+							boxTime.data = 620
 							boxTime.style.cssText =
 								"background-image: linear-gradient(#fccc54 15%, #d01424 30%, #cc6953 90%);height:12.8px;"
 							boxContent.appendChild(boxTime)
@@ -2772,9 +2771,9 @@ lib.translate.shhlianhua2 = '莲华3级';*/
 					var boxContentpl = document.createElement('div')
 					boxContentpl.setAttribute('id', 'jindutiaopl')
 					boxContentpl.style.cssText =
-						"background-color: rgba(0,0,0,0.4);width: 580px;height:12.3px;border-radius: 1000px;box-shadow:0px 0px 9px #2e2b27 inset,0px 0px 2.1px #FFFFD5;overflow: hidden;border:1.2px solid #000000;position: fixed;bottom: calc(23% + 13.5px);left: calc(50% - 300px); z-index: -0.5;"
+						"background-color: rgba(0,0,0,0.4);width: 620px;height:12.3px;border-radius: 1000px;box-shadow:0px 0px 9px #2e2b27 inset,0px 0px 2.1px #FFFFD5;overflow: hidden;border:1.2px solid #000000;position: fixed;bottom:26.3%;left: calc(50% - 300px);"
 					var boxTimepl = document.createElement('div')
-					boxTimepl.data = 580
+					boxTimepl.data = 620
 					boxTimepl.style.cssText =
 						"background-image: linear-gradient(#fccc54 15%, #d01424 30%, #cc6953 90%);height:12.8px;"
 					boxContentpl.appendChild(boxTimepl)
